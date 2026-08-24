@@ -5,43 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Minesweeper Minimal</title>
     
-    <!-- FAVICON: Mina simétrica corregida -->
+    <!-- FAVICON: Mina simétrica -->
     <link id="favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='32' fill='%23FF6B6B'/><circle cx='40' cy='38' r='6' fill='%23FFFFFF'/><path d='M50 12 L50 2 M77 23 L84 16 M88 50 L98 50 M77 77 L84 84 M50 88 L50 98 M23 77 L16 84 M12 50 L2 50 M23 23 L16 16' stroke='%23FF6B6B' stroke-width='8' stroke-linecap='round'/></svg>">
 
     <style>
-        /* TEMAS DE COLOR */
-        :root {
-            /* Theme 1: Mini Metro (Clásico) */
+        /* =========================================
+           TEMAS DE COLOR (8 PALETAS)
+           ========================================= */
+        :root, [data-theme="metro"] {
+            /* 1. Mini Metro (Clásico) */
             --bg-color: #F0EEE9; --surface: #FFFFFF; --cell-hidden: #E3DFD6; --cell-revealed: #F9F8F6;
             --text-main: #333333; --text-muted: #888888; --accent: #FF6B6B; --primary: #4ECDC4; --success: #A8E6CF;
-            
-            --c1: #4ECDC4; --c2: #65C59F; --c3: #FFB37C; --c4: #FFAAA5;
-            --c5: #FF8B94; --c6: #C5A3FF; --c7: #9D9D9D; --c8: #333333;
+            --c1: #4ECDC4; --c2: #65C59F; --c3: #FFB37C; --c4: #FFAAA5; --c5: #FF8B94; --c6: #C5A3FF; --c7: #9D9D9D; --c8: #333333;
         }
 
         [data-theme="motorway"] {
-            /* Theme 2: Mini Motorways (Cálido) */
+            /* 2. Mini Motorways (Cálido) */
             --bg-color: #F4ECE1; --surface: #FAFAFA; --cell-hidden: #E3D5C5; --cell-revealed: #FDFBF8;
             --text-main: #4A4A4A; --text-muted: #9B9B9B; --accent: #F26457; --primary: #5289B5; --success: #88C5A8;
-            
-            --c1: #5289B5; --c2: #6E9B78; --c3: #E08A56; --c4: #D36C70;
-            --c5: #C45564; --c6: #9B7EB2; --c7: #858585; --c8: #2C2C2C;
+            --c1: #5289B5; --c2: #6E9B78; --c3: #E08A56; --c4: #D36C70; --c5: #C45564; --c6: #9B7EB2; --c7: #858585; --c8: #2C2C2C;
         }
 
         [data-theme="monument"] {
-            /* Theme 3: Monument Valley (Nocturno) */
+            /* 3. Monument Valley (Nocturno Místico) */
             --bg-color: #242436; --surface: #32324A; --cell-hidden: #45455E; --cell-revealed: #2C2C40;
             --text-main: #E0E0E0; --text-muted: #8B8B9E; --accent: #FF6480; --primary: #7582D2; --success: #67E0A3;
-            
-            --c1: #7582D2; --c2: #67E0A3; --c3: #FFC073; --c4: #FF8BA0;
-            --c5: #FF4A6B; --c6: #B794F6; --c7: #B8B8C7; --c8: #FFFFFF;
+            --c1: #7582D2; --c2: #67E0A3; --c3: #FFC073; --c4: #FF8BA0; --c5: #FF4A6B; --c6: #B794F6; --c7: #B8B8C7; --c8: #FFFFFF;
         }
 
+        [data-theme="darkwave"] {
+            /* 4. Darkwave / Post-punk (Oscuro con Neón Morado) */
+            --bg-color: #0F0F0F; --surface: #1E1E1E; --cell-hidden: #2A2A2A; --cell-revealed: #161616;
+            --text-main: #FFFFFF; --text-muted: #888888; --accent: #BB86FC; --primary: #03DAC6; --success: #CF6679;
+            --c1: #03DAC6; --c2: #4CAF50; --c3: #FFEB3B; --c4: #FF9800; --c5: #F44336; --c6: #E040FB; --c7: #9E9E9E; --c8: #FFFFFF;
+        }
+
+        [data-theme="cyber"] {
+            /* 5. Cyber-Tracker (Tron / Hacker) */
+            --bg-color: #020205; --surface: #0B0B14; --cell-hidden: #112233; --cell-revealed: #050A14;
+            --text-main: #00F3FF; --text-muted: #006688; --accent: #FF007C; --primary: #00F3FF; --success: #00FFAA;
+            --c1: #00F3FF; --c2: #00FFAA; --c3: #FFD700; --c4: #FF7700; --c5: #FF007C; --c6: #9D00FF; --c7: #555577; --c8: #FFFFFF;
+        }
+
+        [data-theme="avian"] {
+            /* 6. AvianVibe (Naturaleza Profunda) */
+            --bg-color: #1A2118; --surface: #273024; --cell-hidden: #384234; --cell-revealed: #1F261D;
+            --text-main: #E2E8DF; --text-muted: #84917E; --accent: #FFB703; --primary: #8CB369; --success: #A7C957;
+            --c1: #8CB369; --c2: #A7C957; --c3: #F4A261; --c4: #E76F51; --c5: #D62828; --c6: #B56576; --c7: #6C7A89; --c8: #FDFCDC;
+        }
+
+        [data-theme="sakura"] {
+            /* 7. Sakura Pastel (Minimalismo Suave) */
+            --bg-color: #FDF6F5; --surface: #FFFFFF; --cell-hidden: #F4E1E1; --cell-revealed: #FCF1F1;
+            --text-main: #5D5D5D; --text-muted: #BDBDBD; --accent: #FF9A9E; --primary: #A1C4FD; --success: #C2E9FB;
+            --c1: #A1C4FD; --c2: #C2E9FB; --c3: #FBC2EB; --c4: #FFB199; --c5: #FF9A9E; --c6: #D4FC79; --c7: #A9A9A9; --c8: #333333;
+        }
+
+        [data-theme="sunset"] {
+            /* 8. Retro Sunset (Cálido y Nostálgico) */
+            --bg-color: #2B2129; --surface: #3A2C38; --cell-hidden: #523A4D; --cell-revealed: #332731;
+            --text-main: #F4E8D3; --text-muted: #9E8596; --accent: #FF7B54; --primary: #FFB26B; --success: #FFD56B;
+            --c1: #FFB26B; --c2: #FFD56B; --c3: #FF7B54; --c4: #E55B5B; --c5: #A24963; --c6: #735377; --c7: #A8A8B3; --c8: #FFFFFF;
+        }
+
+        /* =========================================
+           ESTILOS GENERALES
+           ========================================= */
         body, html {
             margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color); color: var(--text-main); height: 100vh;
             display: flex; flex-direction: column; align-items: center; overflow: hidden;
-            user-select: none; -webkit-user-select: none; transition: background-color 0.4s, color 0.4s;
+            user-select: none; -webkit-user-select: none; transition: background-color 0.8s ease, color 0.8s ease;
         }
 
         /* INICIO */
@@ -71,7 +105,7 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: var(--cell-hidden); border-radius: 2px; }
 
         .btn {
-            background: var(--primary); color: white; border: none; padding: 16px 40px;
+            background: var(--primary); color: var(--surface); border: none; padding: 16px 40px;
             border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); transition: all 0.3s ease; letter-spacing: 1px;
         }
@@ -93,7 +127,7 @@
             background: var(--cell-hidden); border: none; padding: 10px 20px; border-radius: 20px;
             font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; gap: 8px; color: var(--text-main);
         }
-        .toggle-btn.flag-mode { background: var(--accent); color: white; }
+        .toggle-btn.flag-mode { background: var(--accent); color: var(--surface); }
 
         /* CONTENEDOR OPTIMIZADO PARA SCROLL MÓVIL */
         .board-wrapper { 
@@ -124,14 +158,14 @@
             100% { transform: scale(1); background-color: var(--accent); }
         }
         .cell.exploded { animation: explode 0.4s ease-out forwards; position: relative; z-index: 10; background-color: var(--accent) !important; }
-        .cell.exploded .mine-svg { color: white; }
+        .cell.exploded .mine-svg { color: var(--surface); }
 
         .back-btn { background: transparent; border: 2px solid var(--text-muted); color: var(--text-muted); padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 20px; align-self: center; }
 
         @media (max-width: 500px) {
             .cell { width: 28px; height: 28px; font-size: 14px; }
             .header { padding: 12px 15px; } .stat { font-size: 16px; }
-            .board-wrapper { align-items: flex-start; justify-content: flex-start; } /* Mejora el scroll en mapas grandes */
+            .board-wrapper { align-items: flex-start; justify-content: flex-start; } 
         }
     </style>
 </head>
@@ -140,10 +174,16 @@
     <div id="start-screen">
         <h1>MINESWEEPER</h1>
         
-        <select id="theme-selector" class="theme-selector" onchange="changeTheme()">
+        <!-- Mantenemos el selector por si quieres curiosear o fijar un tema, pero se actualizará solo -->
+        <select id="theme-selector" class="theme-selector" onchange="manualThemeChange()">
             <option value="metro">Theme: Mini Metro</option>
             <option value="motorway">Theme: Mini Motorways</option>
             <option value="monument">Theme: Monument Valley</option>
+            <option value="darkwave">Theme: Darkwave</option>
+            <option value="cyber">Theme: Cyber-Tracker</option>
+            <option value="avian">Theme: AvianVibe</option>
+            <option value="sakura">Theme: Sakura Pastel</option>
+            <option value="sunset">Theme: Retro Sunset</option>
         </select>
 
         <div class="slider-container">
@@ -151,7 +191,7 @@
             <span class="best-time-label" id="best-time-label">Mejor tiempo: --</span>
             <input type="range" id="diff-slider" min="0" max="3" value="0" step="1">
         </div>
-        <button class="btn" onclick="startGame()">Iniciar</button>
+        <button class="btn" onclick="startGame()">Iniciar Partida</button>
     </div>
 
     <div id="game-screen">
@@ -168,11 +208,13 @@
         const mineIconHTML = `<svg viewBox='0 0 100 100' class='mine-svg'><circle cx='50' cy='50' r='32' fill='currentColor'/><circle cx='40' cy='38' r='6' fill='var(--surface)'/><path d='M50 12 L50 2 M77 23 L84 16 M88 50 L98 50 M77 77 L84 84 M50 88 L50 98 M23 77 L16 84 M12 50 L2 50 M23 23 L16 16' stroke='currentColor' stroke-width='8' stroke-linecap='round'/></svg>`;
 
         const difficulties = [
-            { name: 'EASY', rows: 9, cols: 9, mines: 10, color: 'var(--c1)' },
-            { name: 'MEDIUM', rows: 16, cols: 16, mines: 40, color: 'var(--c3)' },
-            { name: 'HARD', rows: 16, cols: 30, mines: 99, color: 'var(--c5)' },
-            { name: 'EVIL', rows: 24, cols: 30, mines: 160, color: 'var(--c8)' }
+            { name: 'EASY', rows: 9, cols: 9, mines: 10 },
+            { name: 'MEDIUM', rows: 16, cols: 16, mines: 40 },
+            { name: 'HARD', rows: 16, cols: 30, mines: 99 },
+            { name: 'EVIL', rows: 24, cols: 30, mines: 160 }
         ];
+
+        const allThemes = ['metro', 'motorway', 'monument', 'darkwave', 'cyber', 'avian', 'sakura', 'sunset'];
 
         let bestTimes = JSON.parse(localStorage.getItem('minimalMinesweeperBestTimes')) || {0: null, 1: null, 2: null, 3: null};
         
@@ -184,19 +226,39 @@
         const label = document.getElementById('diff-label');
         const bestTimeLabel = document.getElementById('best-time-label');
 
-        function changeTheme() {
+        function manualThemeChange() {
             document.body.dataset.theme = document.getElementById('theme-selector').value;
+        }
+
+        // Seleccionar color de dificultad de la paleta actual en vivo
+        function getThemeColor(diffIndex) {
+            const styles = getComputedStyle(document.body);
+            if(diffIndex == 0) return styles.getPropertyValue('--c1').trim();
+            if(diffIndex == 1) return styles.getPropertyValue('--c3').trim();
+            if(diffIndex == 2) return styles.getPropertyValue('--c5').trim();
+            return styles.getPropertyValue('--c8').trim();
         }
 
         function updateStartScreenUI() {
             label.innerText = difficulties[currentDiff].name;
-            label.style.color = difficulties[currentDiff].color;
+            // Retrasar sutilmente la asignación del color para que la variable CSS se actualice primero si hubo cambio de tema
+            setTimeout(() => { label.style.color = getThemeColor(currentDiff); }, 50);
+            
             const record = bestTimes[currentDiff];
             bestTimeLabel.innerText = record ? `Mejor tiempo: ${record}s` : 'Mejor tiempo: --';
         }
 
         slider.addEventListener('input', (e) => { currentDiff = e.target.value; updateStartScreenUI(); });
-        window.onload = updateStartScreenUI;
+        window.onload = () => { 
+            setRandomTheme();
+            updateStartScreenUI(); 
+        };
+
+        function setRandomTheme() {
+            const randomTheme = allThemes[Math.floor(Math.random() * allThemes.length)];
+            document.body.dataset.theme = randomTheme;
+            document.getElementById('theme-selector').value = randomTheme;
+        }
 
         function showStartScreen() {
             clearInterval(timerInterval);
@@ -210,6 +272,10 @@
         }
 
         function startGame() {
+            // ¡Magia! Cambiamos el tema aleatoriamente cada que iniciamos partida
+            setRandomTheme();
+            updateStartScreenUI();
+
             const config = difficulties[currentDiff];
             rows = config.rows; cols = config.cols; totalMines = config.mines;
             minesLeft = totalMines; isGameOver = false; firstClick = true; timer = 0; clearInterval(timerInterval);
@@ -250,13 +316,11 @@
             while (minesPlaced < totalMines) {
                 let r = Math.floor(Math.random() * rows);
                 let c = Math.floor(Math.random() * cols);
-                // Garantizar que la mina no caiga en el clic inicial ni en sus márgenes colindantes (paridad Minesweeper Online)
                 if (grid[r][c] !== 'M' && Math.max(Math.abs(r - firstR), Math.abs(c - firstC)) > 1) {
                     grid[r][c] = 'M';
                     minesPlaced++;
                 }
             }
-            // Recálculo estricto de números perimetrales
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 'M') continue;
@@ -285,7 +349,6 @@
                     const cell = document.createElement('div');
                     cell.className = 'cell';
                     
-                    // Eventos táctiles optimizados para NO bloquear el scroll
                     cell.addEventListener('touchstart', (e) => {
                         if (isGameOver || revealed[r][c]) return;
                         pressTimer = setTimeout(() => {
@@ -304,9 +367,8 @@
                         if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
                     }, {passive: true});
                     
-                    // Clic estándar (se dispara en desktop y al soltar el tap en móvil)
                     cell.addEventListener('click', (e) => {
-                        if (Date.now() - lastFlagTime < 300) return; // Previene clic si acaba de poner bandera por long-press
+                        if (Date.now() - lastFlagTime < 300) return; 
                         handleInteraction(r, c);
                     });
 
@@ -353,11 +415,10 @@
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     const el = cells[r * cols + c];
-                    // Mantener estado de explosión si existe
                     const isExploded = el.classList.contains('exploded');
                     el.className = 'cell' + (isExploded ? ' exploded' : ''); 
                     
-                    if (!isExploded) el.innerHTML = ''; // Limpiar solo si no ha explotado
+                    if (!isExploded) el.innerHTML = ''; 
 
                     if (revealed[r][c]) {
                         el.classList.add('revealed');
@@ -391,7 +452,6 @@
                 }
                 setTimeout(() => alert(`¡Geometría completada en ${timer}s!`), 300);
             } else {
-                // Animación de explosión en la mina clickeada
                 if (clickedRow !== undefined && clickedCol !== undefined) {
                     const el = document.getElementById('board').children[clickedRow * cols + clickedCol];
                     el.innerHTML = mineIconHTML;
