@@ -5,33 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Minesweeper Minimal</title>
     
-    <!-- FAVICON: Mina minimalista embebida en SVG -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='35' fill='%23FF6B6B'/><circle cx='40' cy='40' r='8' fill='%23FFFFFF'/><path d='M50 5 L50 15 M50 85 L50 95 M5 50 L15 50 M85 50 L95 50 M18 18 L25 25 M75 75 L82 82 M18 82 L25 75 M75 18 L82 25' stroke='%23FF6B6B' stroke-width='8' stroke-linecap='round'/></svg>">
+    <!-- FAVICON: Mina simétrica corregida -->
+    <link id="favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='32' fill='%23FF6B6B'/><circle cx='40' cy='38' r='6' fill='%23FFFFFF'/><path d='M50 12 L50 2 M77 23 L84 16 M88 50 L98 50 M77 77 L84 84 M50 88 L50 98 M23 77 L16 84 M12 50 L2 50 M23 23 L16 16' stroke='%23FF6B6B' stroke-width='8' stroke-linecap='round'/></svg>">
 
     <style>
+        /* TEMAS DE COLOR */
         :root {
-            --bg-color: #F0EEE9;
-            --surface: #FFFFFF;
-            --cell-hidden: #E3DFD6;
-            --cell-revealed: #F9F8F6;
-            --text-main: #333333;
-            --text-muted: #888888;
-            --accent: #FF6B6B;
-            --primary: #4ECDC4;
-            --success: #A8E6CF;
+            /* Theme 1: Mini Metro (Clásico) */
+            --bg-color: #F0EEE9; --surface: #FFFFFF; --cell-hidden: #E3DFD6; --cell-revealed: #F9F8F6;
+            --text-main: #333333; --text-muted: #888888; --accent: #FF6B6B; --primary: #4ECDC4; --success: #A8E6CF;
             
-            /* Colores de números */
-            --c1: #4ECDC4; --c2: #A8E6CF; --c3: #FFD3B6; --c4: #FFAAA5;
+            --c1: #4ECDC4; --c2: #65C59F; --c3: #FFB37C; --c4: #FFAAA5;
             --c5: #FF8B94; --c6: #C5A3FF; --c7: #9D9D9D; --c8: #333333;
         }
 
+        [data-theme="motorway"] {
+            /* Theme 2: Mini Motorways (Cálido) */
+            --bg-color: #F4ECE1; --surface: #FAFAFA; --cell-hidden: #E3D5C5; --cell-revealed: #FDFBF8;
+            --text-main: #4A4A4A; --text-muted: #9B9B9B; --accent: #F26457; --primary: #5289B5; --success: #88C5A8;
+            
+            --c1: #5289B5; --c2: #6E9B78; --c3: #E08A56; --c4: #D36C70;
+            --c5: #C45564; --c6: #9B7EB2; --c7: #858585; --c8: #2C2C2C;
+        }
+
+        [data-theme="monument"] {
+            /* Theme 3: Monument Valley (Nocturno) */
+            --bg-color: #242436; --surface: #32324A; --cell-hidden: #45455E; --cell-revealed: #2C2C40;
+            --text-main: #E0E0E0; --text-muted: #8B8B9E; --accent: #FF6480; --primary: #7582D2; --success: #67E0A3;
+            
+            --c1: #7582D2; --c2: #67E0A3; --c3: #FFC073; --c4: #FF8BA0;
+            --c5: #FF4A6B; --c6: #B794F6; --c7: #B8B8C7; --c8: #FFFFFF;
+        }
+
         body, html {
-            margin: 0; padding: 0;
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color); color: var(--text-main);
-            height: 100vh; display: flex; flex-direction: column;
-            align-items: center; overflow: hidden;
-            user-select: none; -webkit-user-select: none;
+            margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color); color: var(--text-main); height: 100vh;
+            display: flex; flex-direction: column; align-items: center; overflow: hidden;
+            user-select: none; -webkit-user-select: none; transition: background-color 0.4s, color 0.4s;
         }
 
         /* INICIO */
@@ -39,8 +49,14 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             height: 100%; width: 100%; transition: opacity 0.4s ease;
         }
-        h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 20px; }
+        h1 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin-bottom: 10px; }
         
+        .theme-selector {
+            margin-bottom: 30px; background: var(--surface); color: var(--text-main);
+            border: 2px solid var(--cell-hidden); padding: 8px 16px; border-radius: 12px;
+            font-size: 14px; font-weight: bold; outline: none; cursor: pointer; transition: all 0.3s;
+        }
+
         .slider-container { width: 80%; max-width: 300px; text-align: center; margin-bottom: 30px; }
         .difficulty-label { font-size: 20px; font-weight: 800; margin-bottom: 5px; display: block; color: var(--primary); letter-spacing: 2px; }
         .best-time-label { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 20px; display: block; height: 20px; }
@@ -49,7 +65,7 @@
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%;
             background: var(--primary); cursor: pointer; margin-top: -10px;
-            box-shadow: 0 4px 10px rgba(78, 205, 196, 0.4); transition: transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); transition: transform 0.2s;
         }
         input[type=range]::-webkit-slider-thumb:active { transform: scale(1.2); }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: var(--cell-hidden); border-radius: 2px; }
@@ -57,7 +73,7 @@
         .btn {
             background: var(--primary); color: white; border: none; padding: 16px 40px;
             border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3); transition: all 0.3s ease; letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); transition: all 0.3s ease; letter-spacing: 1px;
         }
         .btn:active { transform: translateY(2px); }
 
@@ -68,37 +84,54 @@
         }
         .header {
             display: flex; justify-content: space-between; align-items: center; background: var(--surface);
-            padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px;
+            padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; transition: background 0.4s;
         }
         .stat { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; transition: color 0.3s;}
         .stat.success { color: var(--success); }
         
         .toggle-btn {
             background: var(--cell-hidden); border: none; padding: 10px 20px; border-radius: 20px;
-            font-weight: bold; cursor: pointer; transition: background 0.3s; display: flex; gap: 8px; color: var(--text-main);
+            font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; gap: 8px; color: var(--text-main);
         }
         .toggle-btn.flag-mode { background: var(--accent); color: white; }
 
-        .board-wrapper { flex-grow: 1; overflow: auto; display: flex; justify-content: center; align-items: center; border-radius: 20px; -webkit-overflow-scrolling: touch; }
-        #board { display: grid; gap: 2px; padding: 10px; background: var(--surface); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        /* CONTENEDOR OPTIMIZADO PARA SCROLL MÓVIL */
+        .board-wrapper { 
+            flex-grow: 1; overflow: auto; display: flex; justify-content: center; align-items: center; 
+            border-radius: 20px; -webkit-overflow-scrolling: touch; padding: 10px;
+        }
+        
+        #board { 
+            display: grid; gap: 2px; padding: 10px; background: var(--surface); 
+            border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: background 0.4s;
+        }
 
         .cell {
             width: 32px; height: 32px; background: var(--cell-hidden); border-radius: 6px;
             display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 16px;
             cursor: pointer; transition: background 0.15s, transform 0.1s;
         }
-        .cell:active { transform: scale(0.85); background: #dcd7cc; }
+        .cell:active { transform: scale(0.85); filter: brightness(0.9); }
         .cell.revealed { background: var(--cell-revealed); cursor: default; transform: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);}
         
-        .cell.mine { background: var(--accent); }
-        .cell.mine::after { content: ''; width: 14px; height: 14px; background: white; border-radius: 50%; }
-        .cell.flag::after { content: '▲'; color: var(--accent); font-size: 16px; text-shadow: 0 2px 4px rgba(255,107,107,0.4); }
+        /* ICONO DE MINA Y ANIMACIÓN */
+        .mine-svg { width: 65%; height: 65%; color: var(--accent); transition: color 0.3s; }
+        .cell.flag::after { content: '▲'; color: var(--accent); font-size: 16px; text-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+
+        @keyframes explode {
+            0% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.4); background-color: var(--accent); z-index: 10; box-shadow: 0 0 20px var(--accent); }
+            100% { transform: scale(1); background-color: var(--accent); }
+        }
+        .cell.exploded { animation: explode 0.4s ease-out forwards; position: relative; z-index: 10; background-color: var(--accent) !important; }
+        .cell.exploded .mine-svg { color: white; }
 
         .back-btn { background: transparent; border: 2px solid var(--text-muted); color: var(--text-muted); padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 20px; align-self: center; }
 
         @media (max-width: 500px) {
             .cell { width: 28px; height: 28px; font-size: 14px; }
             .header { padding: 12px 15px; } .stat { font-size: 16px; }
+            .board-wrapper { align-items: flex-start; justify-content: flex-start; } /* Mejora el scroll en mapas grandes */
         }
     </style>
 </head>
@@ -106,6 +139,13 @@
 
     <div id="start-screen">
         <h1>MINESWEEPER</h1>
+        
+        <select id="theme-selector" class="theme-selector" onchange="changeTheme()">
+            <option value="metro">Theme: Mini Metro</option>
+            <option value="motorway">Theme: Mini Motorways</option>
+            <option value="monument">Theme: Monument Valley</option>
+        </select>
+
         <div class="slider-container">
             <span class="difficulty-label" id="diff-label">EASY</span>
             <span class="best-time-label" id="best-time-label">Mejor tiempo: --</span>
@@ -125,6 +165,8 @@
     </div>
 
     <script>
+        const mineIconHTML = `<svg viewBox='0 0 100 100' class='mine-svg'><circle cx='50' cy='50' r='32' fill='currentColor'/><circle cx='40' cy='38' r='6' fill='var(--surface)'/><path d='M50 12 L50 2 M77 23 L84 16 M88 50 L98 50 M77 77 L84 84 M50 88 L50 98 M23 77 L16 84 M12 50 L2 50 M23 23 L16 16' stroke='currentColor' stroke-width='8' stroke-linecap='round'/></svg>`;
+
         const difficulties = [
             { name: 'EASY', rows: 9, cols: 9, mines: 10, color: 'var(--c1)' },
             { name: 'MEDIUM', rows: 16, cols: 16, mines: 40, color: 'var(--c3)' },
@@ -136,11 +178,15 @@
         
         let currentDiff = 0, grid = [], revealed = [], flags = [];
         let rows, cols, totalMines, minesLeft, timer = 0, timerInterval;
-        let isGameOver = false, firstClick = true, isFlagMode = false, pressTimer = null;
+        let isGameOver = false, firstClick = true, isFlagMode = false, pressTimer = null, lastFlagTime = 0;
 
         const slider = document.getElementById('diff-slider');
         const label = document.getElementById('diff-label');
         const bestTimeLabel = document.getElementById('best-time-label');
+
+        function changeTheme() {
+            document.body.dataset.theme = document.getElementById('theme-selector').value;
+        }
 
         function updateStartScreenUI() {
             label.innerText = difficulties[currentDiff].name;
@@ -170,8 +216,8 @@
             
             document.getElementById('timer').innerText = '000';
             updateFlagDisplay();
-            
             initGrid(); renderBoard();
+            
             document.getElementById('start-screen').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('start-screen').style.display = 'none';
@@ -194,9 +240,9 @@
         }
 
         function initGrid() {
-            grid = Array(rows).fill().map(() => Array(cols).fill(0));
-            revealed = Array(rows).fill().map(() => Array(cols).fill(false));
-            flags = Array(rows).fill().map(() => Array(cols).fill(false));
+            grid = Array.from({length: rows}, () => Array(cols).fill(0));
+            revealed = Array.from({length: rows}, () => Array(cols).fill(false));
+            flags = Array.from({length: rows}, () => Array(cols).fill(false));
         }
 
         function placeMines(firstR, firstC) {
@@ -204,12 +250,13 @@
             while (minesPlaced < totalMines) {
                 let r = Math.floor(Math.random() * rows);
                 let c = Math.floor(Math.random() * cols);
-                // QoL: Evitar minas en el clic inicial y sus 8 vecinos inmediatos para garantizar una apertura limpia
+                // Garantizar que la mina no caiga en el clic inicial ni en sus márgenes colindantes (paridad Minesweeper Online)
                 if (grid[r][c] !== 'M' && Math.max(Math.abs(r - firstR), Math.abs(c - firstC)) > 1) {
                     grid[r][c] = 'M';
                     minesPlaced++;
                 }
             }
+            // Recálculo estricto de números perimetrales
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 'M') continue;
@@ -232,42 +279,47 @@
             const board = document.getElementById('board');
             board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
             board.innerHTML = '';
+            
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     const cell = document.createElement('div');
                     cell.className = 'cell';
                     
-                    cell.addEventListener('mousedown', (e) => handleInteraction(e, r, c));
-                    cell.addEventListener('contextmenu', (e) => { e.preventDefault(); handleFlag(r, c); });
-                    
-                    // QoL: Long-press reducido a 500ms
+                    // Eventos táctiles optimizados para NO bloquear el scroll
                     cell.addEventListener('touchstart', (e) => {
-                        e.preventDefault();
                         if (isGameOver || revealed[r][c]) return;
                         pressTimer = setTimeout(() => {
                             handleFlag(r, c);
+                            lastFlagTime = Date.now();
                             if(navigator.vibrate) navigator.vibrate(50);
                             pressTimer = null;
                         }, 500); 
-                    }, {passive: false});
+                    }, {passive: true});
 
-                    cell.addEventListener('touchend', (e) => {
-                        e.preventDefault();
-                        if (pressTimer) {
-                            clearTimeout(pressTimer); pressTimer = null;
-                            handleInteraction({button: 0}, r, c);
-                        }
-                    }, {passive: false});
-                    cell.addEventListener('touchmove', () => { if(pressTimer) { clearTimeout(pressTimer); pressTimer = null; } }, {passive: false});
+                    cell.addEventListener('touchmove', () => { 
+                        if(pressTimer) { clearTimeout(pressTimer); pressTimer = null; } 
+                    }, {passive: true});
 
+                    cell.addEventListener('touchend', () => {
+                        if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+                    }, {passive: true});
+                    
+                    // Clic estándar (se dispara en desktop y al soltar el tap en móvil)
+                    cell.addEventListener('click', (e) => {
+                        if (Date.now() - lastFlagTime < 300) return; // Previene clic si acaba de poner bandera por long-press
+                        handleInteraction(r, c);
+                    });
+
+                    cell.addEventListener('contextmenu', (e) => { e.preventDefault(); handleFlag(r, c); });
+                    
                     board.appendChild(cell);
                 }
             }
             updateBoardVisuals();
         }
 
-        function handleInteraction(e, r, c) {
-            if (isGameOver || e.button === 2) return;
+        function handleInteraction(r, c) {
+            if (isGameOver) return;
             isFlagMode ? handleFlag(r, c) : revealCell(r, c);
         }
 
@@ -284,7 +336,7 @@
             if (firstClick) { placeMines(r, c); firstClick = false; }
             revealed[r][c] = true;
 
-            if (grid[r][c] === 'M') { gameOver(false); return; }
+            if (grid[r][c] === 'M') { gameOver(false, r, c); return; }
             if (grid[r][c] === 0) {
                 for (let dr = -1; dr <= 1; dr++) {
                     for (let dc = -1; dc <= 1; dc++) {
@@ -301,11 +353,20 @@
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     const el = cells[r * cols + c];
-                    el.className = 'cell'; el.innerHTML = '';
+                    // Mantener estado de explosión si existe
+                    const isExploded = el.classList.contains('exploded');
+                    el.className = 'cell' + (isExploded ? ' exploded' : ''); 
+                    
+                    if (!isExploded) el.innerHTML = ''; // Limpiar solo si no ha explotado
+
                     if (revealed[r][c]) {
                         el.classList.add('revealed');
-                        if (grid[r][c] === 'M') el.classList.add('mine');
-                        else if (grid[r][c] > 0) { el.innerText = grid[r][c]; el.style.color = `var(--c${grid[r][c]})`; }
+                        if (grid[r][c] === 'M' && !isExploded) {
+                            el.innerHTML = mineIconHTML;
+                        } else if (grid[r][c] > 0) { 
+                            el.innerText = grid[r][c]; 
+                            el.style.color = `var(--c${grid[r][c]})`; 
+                        }
                     } else if (flags[r][c]) {
                         el.classList.add('flag');
                     }
@@ -313,11 +374,13 @@
             }
         }
 
-        function gameOver(win) {
+        function gameOver(win, clickedRow, clickedCol) {
             isGameOver = true; clearInterval(timerInterval);
+            
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) { if (grid[r][c] === 'M') revealed[r][c] = true; }
             }
+            
             updateBoardVisuals();
             
             if (win) {
@@ -328,8 +391,14 @@
                 }
                 setTimeout(() => alert(`¡Geometría completada en ${timer}s!`), 300);
             } else {
-                if(navigator.vibrate) navigator.vibrate([100, 50, 100]); // Patrón de detonación
-                setTimeout(() => alert("Mina detonada. Inténtalo de nuevo."), 300);
+                // Animación de explosión en la mina clickeada
+                if (clickedRow !== undefined && clickedCol !== undefined) {
+                    const el = document.getElementById('board').children[clickedRow * cols + clickedCol];
+                    el.innerHTML = mineIconHTML;
+                    el.classList.add('exploded');
+                }
+                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                setTimeout(() => alert("Mina detonada. Inténtalo de nuevo."), 500);
             }
         }
 
