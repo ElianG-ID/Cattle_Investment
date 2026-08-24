@@ -2,373 +2,344 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avian Radar Cloud AI (Ruta B)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minesweeper Minimal</title>
+    
+    <!-- FAVICON: Mina minimalista embebida en SVG -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='35' fill='%23FF6B6B'/><circle cx='40' cy='40' r='8' fill='%23FFFFFF'/><path d='M50 5 L50 15 M50 85 L50 95 M5 50 L15 50 M85 50 L95 50 M18 18 L25 25 M75 75 L82 82 M18 82 L25 75 M75 18 L82 25' stroke='%23FF6B6B' stroke-width='8' stroke-linecap='round'/></svg>">
+
     <style>
         :root {
-            --neon-blue: #00f3ff;
-            --neon-pink: #ff007c;
-            --bg-dark: #020205;
+            --bg-color: #F0EEE9;
+            --surface: #FFFFFF;
+            --cell-hidden: #E3DFD6;
+            --cell-revealed: #F9F8F6;
+            --text-main: #333333;
+            --text-muted: #888888;
+            --accent: #FF6B6B;
+            --primary: #4ECDC4;
+            --success: #A8E6CF;
+            
+            /* Colores de números */
+            --c1: #4ECDC4; --c2: #A8E6CF; --c3: #FFD3B6; --c4: #FFAAA5;
+            --c5: #FF8B94; --c6: #C5A3FF; --c7: #9D9D9D; --c8: #333333;
         }
 
-        body {
-            margin: 0; overflow: hidden; background-color: var(--bg-dark);
-            font-family: 'Courier New', Courier, monospace; color: var(--neon-blue);
+        body, html {
+            margin: 0; padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color); color: var(--text-main);
+            height: 100vh; display: flex; flex-direction: column;
+            align-items: center; overflow: hidden;
+            user-select: none; -webkit-user-select: none;
         }
 
-        #map-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; }
-
-        #ui-panel {
-            position: absolute; top: 20px; left: 20px; z-index: 10;
-            background: rgba(2, 2, 5, 0.85); border: 1px solid var(--neon-blue);
-            padding: 15px; border-radius: 8px; width: 280px;
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); backdrop-filter: blur(5px);
+        /* INICIO */
+        #start-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; width: 100%; transition: opacity 0.4s ease;
         }
-
-        h3 { margin: 0 0 5px 0; font-size: 16px; text-transform: uppercase; }
-        .status-text { font-size: 10px; color: #aaa; margin-bottom: 6px; display: block; }
-        .api-status { font-size: 10px; color: #ffeb3b; font-weight: bold; margin-bottom: 10px; display: block; }
+        h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 20px; }
+        
+        .slider-container { width: 80%; max-width: 300px; text-align: center; margin-bottom: 30px; }
+        .difficulty-label { font-size: 20px; font-weight: 800; margin-bottom: 5px; display: block; color: var(--primary); letter-spacing: 2px; }
+        .best-time-label { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 20px; display: block; height: 20px; }
+        
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin-bottom: 15px;}
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%;
+            background: var(--primary); cursor: pointer; margin-top: -10px;
+            box-shadow: 0 4px 10px rgba(78, 205, 196, 0.4); transition: transform 0.2s;
+        }
+        input[type=range]::-webkit-slider-thumb:active { transform: scale(1.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: var(--cell-hidden); border-radius: 2px; }
 
         .btn {
-            background: rgba(0, 243, 255, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue);
-            padding: 10px; width: 100%; cursor: pointer; font-weight: bold; transition: all 0.3s;
+            background: var(--primary); color: white; border: none; padding: 16px 40px;
+            border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3); transition: all 0.3s ease; letter-spacing: 1px;
         }
-        .btn:hover, .btn.active { background: var(--neon-blue); color: #000; box-shadow: 0 0 10px var(--neon-blue); }
+        .btn:active { transform: translateY(2px); }
 
-        #feed { margin-top: 15px; max-height: 40vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .card { border-left: 3px solid var(--neon-pink); background: rgba(255, 0, 124, 0.1); padding: 8px; font-size: 11px; }
+        /* JUEGO */
+        #game-screen {
+            display: none; flex-direction: column; width: 100%; height: 100%;
+            max-width: 1000px; padding: 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.4s ease;
+        }
+        .header {
+            display: flex; justify-content: space-between; align-items: center; background: var(--surface);
+            padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px;
+        }
+        .stat { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; transition: color 0.3s;}
+        .stat.success { color: var(--success); }
+        
+        .toggle-btn {
+            background: var(--cell-hidden); border: none; padding: 10px 20px; border-radius: 20px;
+            font-weight: bold; cursor: pointer; transition: background 0.3s; display: flex; gap: 8px; color: var(--text-main);
+        }
+        .toggle-btn.flag-mode { background: var(--accent); color: white; }
 
-        #visualizer-pip {
-            position: absolute; bottom: 20px; right: 20px; width: 180px; height: 180px;
-            z-index: 10; border-radius: 50%; border: 2px solid rgba(0, 243, 255, 0.3);
-            background: radial-gradient(circle, rgba(0,243,255,0.05) 0%, rgba(0,0,0,0.8) 70%);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2); overflow: hidden;
+        .board-wrapper { flex-grow: 1; overflow: auto; display: flex; justify-content: center; align-items: center; border-radius: 20px; -webkit-overflow-scrolling: touch; }
+        #board { display: grid; gap: 2px; padding: 10px; background: var(--surface); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+
+        .cell {
+            width: 32px; height: 32px; background: var(--cell-hidden); border-radius: 6px;
+            display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 16px;
+            cursor: pointer; transition: background 0.15s, transform 0.1s;
+        }
+        .cell:active { transform: scale(0.85); background: #dcd7cc; }
+        .cell.revealed { background: var(--cell-revealed); cursor: default; transform: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);}
+        
+        .cell.mine { background: var(--accent); }
+        .cell.mine::after { content: ''; width: 14px; height: 14px; background: white; border-radius: 50%; }
+        .cell.flag::after { content: '▲'; color: var(--accent); font-size: 16px; text-shadow: 0 2px 4px rgba(255,107,107,0.4); }
+
+        .back-btn { background: transparent; border: 2px solid var(--text-muted); color: var(--text-muted); padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 20px; align-self: center; }
+
+        @media (max-width: 500px) {
+            .cell { width: 28px; height: 28px; font-size: 14px; }
+            .header { padding: 12px 15px; } .stat { font-size: 16px; }
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
-    <div id="map-container"></div>
-
-    <div id="ui-panel">
-        <h3>Radar de Campo (Cloud)</h3>
-        <span class="status-text" id="gps-data">GPS en espera...</span>
-        <span class="api-status" id="api-data">API: En espera de inicio</span>
-        <button id="startBtn" class="btn">INICIAR ESCÁNER CLOUD</button>
-        <div id="feed"></div>
+    <div id="start-screen">
+        <h1>MINESWEEPER</h1>
+        <div class="slider-container">
+            <span class="difficulty-label" id="diff-label">EASY</span>
+            <span class="best-time-label" id="best-time-label">Mejor tiempo: --</span>
+            <input type="range" id="diff-slider" min="0" max="3" value="0" step="1">
+        </div>
+        <button class="btn" onclick="startGame()">Iniciar</button>
     </div>
 
-    <div id="visualizer-pip"></div>
+    <div id="game-screen">
+        <div class="header">
+            <div class="stat">⏱ <span id="timer">000</span></div>
+            <button id="mode-toggle" class="toggle-btn" onclick="toggleMode()">⛏ DIG</button>
+            <div class="stat" id="flag-stat">▲ <span id="flag-count">10</span></div>
+        </div>
+        <div class="board-wrapper"><div id="board"></div></div>
+        <button class="back-btn" onclick="showStartScreen()">SALIR</button>
+    </div>
 
     <script>
-        // === CONFIGURACIÓN DE LA API BIRDNET ===
-        // Aquí colocaremos la URL de la API de BirdNET (o tu propio servidor backend)
-        const BIRDNET_API_URL = "https://birdnet.cornell.edu/api/v2/analyze"; // Ejemplo de endpoint API
+        const difficulties = [
+            { name: 'EASY', rows: 9, cols: 9, mines: 10, color: 'var(--c1)' },
+            { name: 'MEDIUM', rows: 16, cols: 16, mines: 40, color: 'var(--c3)' },
+            { name: 'HARD', rows: 16, cols: 30, mines: 99, color: 'var(--c5)' },
+            { name: 'EVIL', rows: 24, cols: 30, mines: 160, color: 'var(--c8)' }
+        ];
 
-        let audioCtx, analyser, dataArray, mediaRecorder;
-        let audioChunks = [];
-        let isListening = false;
-        let isAnalyzing = false;
-        let pyramids = [];
-        let waterLevel = 0;
-        let currentLat = 0, currentLon = 0;
-
-        // --- 1. ESCENA 3D Y TOPOGRAFÍA ---
-        const sceneMap = new THREE.Scene();
-        sceneMap.fog = new THREE.FogExp2(0x020205, 0.012);
-        const cameraMap = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        cameraMap.position.set(0, 45, 55);
-        const rendererMap = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        rendererMap.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('map-container').appendChild(rendererMap.domElement);
-
-        const controlsMap = new THREE.OrbitControls(cameraMap, rendererMap.domElement);
-        controlsMap.enableDamping = true;
-        controlsMap.maxPolarAngle = Math.PI / 2 - 0.1;
-
-        const mapSize = 150;
-        const segments = 50; 
-        let planeGeo = new THREE.PlaneGeometry(mapSize, mapSize, segments, segments);
-        planeGeo.rotateX(-Math.PI / 2);
-        planeGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(planeGeo.attributes.position.count * 3), 3));
+        let bestTimes = JSON.parse(localStorage.getItem('minimalMinesweeperBestTimes')) || {0: null, 1: null, 2: null, 3: null};
         
-        const planeMat = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.6 });
-        let mapMesh = new THREE.LineSegments(new THREE.WireframeGeometry(planeGeo), planeMat);
-        sceneMap.add(mapMesh);
+        let currentDiff = 0, grid = [], revealed = [], flags = [];
+        let rows, cols, totalMines, minesLeft, timer = 0, timerInterval;
+        let isGameOver = false, firstClick = true, isFlagMode = false, pressTimer = null;
 
-        const radarLaser = new THREE.Mesh(new THREE.BoxGeometry(mapSize, 0.5, 0.5), new THREE.MeshBasicMaterial({ color: 0x00f3ff, transparent: true, opacity: 0.8 }));
-        sceneMap.add(radarLaser);
-        let radarZ = -mapSize/2;
+        const slider = document.getElementById('diff-slider');
+        const label = document.getElementById('diff-label');
+        const bestTimeLabel = document.getElementById('best-time-label');
 
-        const worldGroup = new THREE.Group();
-        sceneMap.add(worldGroup);
-
-        const userPin = new THREE.Mesh(new THREE.OctahedronGeometry(1.5, 0), new THREE.MeshBasicMaterial({ color: 0x00f3ff, wireframe: true }));
-        userPin.position.y = 5;
-        sceneMap.add(userPin);
-
-        // --- 2. PIP VISUALIZADOR (ESFERA CON GRADIENTE) ---
-        const scenePip = new THREE.Scene();
-        const cameraPip = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
-        cameraPip.position.z = 18;
-        const rendererPip = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        rendererPip.setSize(180, 180);
-        document.getElementById('visualizer-pip').appendChild(rendererPip.domElement);
-
-        const blobGeo = new THREE.SphereGeometry(4, 32, 32);
-        const originalBlobPos = new Float32Array(blobGeo.attributes.position.array);
-        blobGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(blobGeo.attributes.position.count * 3), 3));
-        const blobMat = new THREE.MeshBasicMaterial({ vertexColors: true, wireframe: true });
-        const blobMesh = new THREE.Mesh(blobGeo, blobMat);
-        scenePip.add(blobMesh);
-
-        // --- 3. GPS Y TOPOGRAFÍA ---
-        function initGPS() {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition((pos) => {
-                    currentLat = pos.coords.latitude;
-                    currentLon = pos.coords.longitude;
-                    fetchRealTopography(currentLat, currentLon);
-                }, () => { generateFallbackTopo(); }, { timeout: 8000 });
-            } else { generateFallbackTopo(); }
+        function updateStartScreenUI() {
+            label.innerText = difficulties[currentDiff].name;
+            label.style.color = difficulties[currentDiff].color;
+            const record = bestTimes[currentDiff];
+            bestTimeLabel.innerText = record ? `Mejor tiempo: ${record}s` : 'Mejor tiempo: --';
         }
 
-        async function fetchRealTopography(lat, lon) {
-            let locations = [];
-            const offset = 0.006; 
-            for(let i=0; i<6; i++) {
-                for(let j=0; j<6; j++) {
-                    locations.push(`${lat - (offset/2) + (i * (offset/6))},${lon - (offset/2) + (j * (offset/6))}`);
+        slider.addEventListener('input', (e) => { currentDiff = e.target.value; updateStartScreenUI(); });
+        window.onload = updateStartScreenUI;
+
+        function showStartScreen() {
+            clearInterval(timerInterval);
+            document.getElementById('game-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('game-screen').style.display = 'none';
+                document.getElementById('start-screen').style.display = 'flex';
+                updateStartScreenUI();
+                setTimeout(() => document.getElementById('start-screen').style.opacity = '1', 50);
+            }, 400);
+        }
+
+        function startGame() {
+            const config = difficulties[currentDiff];
+            rows = config.rows; cols = config.cols; totalMines = config.mines;
+            minesLeft = totalMines; isGameOver = false; firstClick = true; timer = 0; clearInterval(timerInterval);
+            
+            document.getElementById('timer').innerText = '000';
+            updateFlagDisplay();
+            
+            initGrid(); renderBoard();
+            document.getElementById('start-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('start-screen').style.display = 'none';
+                document.getElementById('game-screen').style.display = 'flex';
+                setTimeout(() => document.getElementById('game-screen').style.opacity = '1', 50);
+            }, 400);
+        }
+
+        function toggleMode() {
+            isFlagMode = !isFlagMode;
+            const btn = document.getElementById('mode-toggle');
+            btn.innerHTML = isFlagMode ? '▲ FLAG' : '⛏ DIG';
+            isFlagMode ? btn.classList.add('flag-mode') : btn.classList.remove('flag-mode');
+        }
+
+        function updateFlagDisplay() {
+            document.getElementById('flag-count').innerText = minesLeft;
+            const stat = document.getElementById('flag-stat');
+            minesLeft === 0 ? stat.classList.add('success') : stat.classList.remove('success');
+        }
+
+        function initGrid() {
+            grid = Array(rows).fill().map(() => Array(cols).fill(0));
+            revealed = Array(rows).fill().map(() => Array(cols).fill(false));
+            flags = Array(rows).fill().map(() => Array(cols).fill(false));
+        }
+
+        function placeMines(firstR, firstC) {
+            let minesPlaced = 0;
+            while (minesPlaced < totalMines) {
+                let r = Math.floor(Math.random() * rows);
+                let c = Math.floor(Math.random() * cols);
+                // QoL: Evitar minas en el clic inicial y sus 8 vecinos inmediatos para garantizar una apertura limpia
+                if (grid[r][c] !== 'M' && Math.max(Math.abs(r - firstR), Math.abs(c - firstC)) > 1) {
+                    grid[r][c] = 'M';
+                    minesPlaced++;
                 }
             }
-            try {
-                const response = await fetch(`https://api.opentopodata.org/v1/srtm30m?locations=${locations.join('|')}`);
-                const data = await response.json();
-                if(data.results) {
-                    applyElevation(data.results.map(r => r.elevation || 0), 6);
-                    document.getElementById('gps-data').innerText = `Topo Sincronizada`;
-                } else { throw new Error(); }
-            } catch(e) { generateFallbackTopo(); }
-        }
-
-        function applyElevation(elevations, gridDim) {
-            const minElev = Math.min(...elevations);
-            const maxElev = Math.max(...elevations);
-            const range = (maxElev - minElev) > 0 ? (maxElev - minElev) : 10;
-            waterLevel = minElev + (range * 0.15);
-
-            const posAttr = planeGeo.attributes.position;
-            const colAttr = planeGeo.attributes.color;
-            
-            for (let i = 0; i < posAttr.count; i++) {
-                const gridX = Math.floor((posAttr.getX(i) + mapSize/2) / (mapSize/gridDim));
-                const gridZ = Math.floor((posAttr.getZ(i) + mapSize/2) / (mapSize/gridDim));
-                const safeX = Math.max(0, Math.min(gridDim - 1, gridX));
-                const safeZ = Math.max(0, Math.min(gridDim - 1, gridZ));
-                
-                let realElev = elevations[safeX * gridDim + safeZ] || minElev;
-                posAttr.setY(i, ((realElev - minElev) / range) * 15);
-
-                if (realElev <= waterLevel) {
-                    colAttr.setXYZ(i, 0.0, 0.1, 0.3); // Agua azul oscuro
-                } else {
-                    colAttr.setXYZ(i, 0.0, 0.26, 0.33); // Tierra cian
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (grid[r][c] === 'M') continue;
+                    let count = 0;
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            let nr = r + dr, nc = c + dc;
+                            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] === 'M') count++;
+                        }
+                    }
+                    grid[r][c] = count;
                 }
             }
-            posAttr.needsUpdate = true;
-            colAttr.needsUpdate = true;
-            
-            sceneMap.remove(mapMesh);
-            mapMesh.geometry.dispose();
-            mapMesh.geometry = new THREE.WireframeGeometry(planeGeo);
-            sceneMap.add(mapMesh);
+            timerInterval = setInterval(() => {
+                timer++; document.getElementById('timer').innerText = timer.toString().padStart(3, '0');
+            }, 1000);
         }
 
-        function generateFallbackTopo() {
-            const elevations = [];
-            for(let i=0; i<36; i++) elevations.push(Math.sin(i)*20 + 30);
-            applyElevation(elevations, 6);
-            document.getElementById('gps-data').innerText = `Terreno Base Activo`;
-        }
+        function renderBoard() {
+            const board = document.getElementById('board');
+            board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            board.innerHTML = '';
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    
+                    cell.addEventListener('mousedown', (e) => handleInteraction(e, r, c));
+                    cell.addEventListener('contextmenu', (e) => { e.preventDefault(); handleFlag(r, c); });
+                    
+                    // QoL: Long-press reducido a 500ms
+                    cell.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        if (isGameOver || revealed[r][c]) return;
+                        pressTimer = setTimeout(() => {
+                            handleFlag(r, c);
+                            if(navigator.vibrate) navigator.vibrate(50);
+                            pressTimer = null;
+                        }, 500); 
+                    }, {passive: false});
 
-        // --- 4. SISTEMA DE AUDIO Y ENVÍO A API BIRDNET (RUTA B) ---
-        async function startSystem() {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 512;
+                    cell.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        if (pressTimer) {
+                            clearTimeout(pressTimer); pressTimer = null;
+                            handleInteraction({button: 0}, r, c);
+                        }
+                    }, {passive: false});
+                    cell.addEventListener('touchmove', () => { if(pressTimer) { clearTimeout(pressTimer); pressTimer = null; } }, {passive: false});
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                const source = audioCtx.createMediaStreamSource(stream);
-                source.connect(analyser);
-
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-                
-                // Configurar grabador de fragmentos de audio
-                mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
-                mediaRecorder.onstop = sendAudioToBirdNetAPI;
-
-                isListening = true;
-
-                document.getElementById('startBtn').innerText = "RADAR EN VIVO";
-                document.getElementById('startBtn').classList.add('active');
-                document.getElementById('api-data').innerText = "API: Escuchando entorno...";
-
-                initGPS();
-                setInterval(checkAudioVolumeAndRecord, 3000); // Evalúa cada 3 seg
-            } catch(e) {
-                alert("Se requieren permisos de micrófono.");
-            }
-        }
-
-        function checkAudioVolumeAndRecord() {
-            if(!isListening || isAnalyzing) return;
-            
-            let avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-            
-            // Si hay un pico de canto/ruido
-            if (avg > 25) { 
-                isAnalyzing = true;
-                document.getElementById('api-data').innerText = "API: Grabando canto (3s)...";
-                document.getElementById('api-data').style.color = "#ff007c";
-
-                audioChunks = [];
-                mediaRecorder.start();
-
-                // Graba 3 segundos y detiene para enviar a la API
-                setTimeout(() => {
-                    mediaRecorder.stop();
-                }, 3000);
-            }
-        }
-
-        // ENVÍO DE AUDIO REAL A LA API
-        async function sendAudioToBirdNetAPI() {
-            document.getElementById('api-data').innerText = "API: Analizando con BirdNET Cloud...";
-            document.getElementById('api-data').style.color = "#00f3ff";
-
-            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-            
-            const formData = new FormData();
-            formData.append('audio', audioBlob, 'bird_song.wav');
-            formData.append('lat', currentLat); // Enviamos el GPS para filtrar especies locales
-            formData.append('lon', currentLon);
-
-            try {
-                /* // CONEXIÓN REAL CON TU BACKEND/API:
-                const response = await fetch(BIRDNET_API_URL, { method: 'POST', body: formData });
-                const result = await response.json(); 
-                // result = [{ species: "Cardinalis cardinalis", confidence: 0.92 }]
-                */
-
-                // Simulamos una respuesta positiva de la API para mantener la fluidez
-                setTimeout(() => {
-                    const species = ["Cardinalis cardinalis", "Haemorhous mexicanus", "Mimus polyglottos"];
-                    const detectedBird = species[Math.floor(Math.random() * species.length)];
-                    const confidence = Math.floor(Math.random() * 20) + 80;
-
-                    displayDetection(detectedBird, confidence);
-
-                    document.getElementById('api-data').innerText = "API: Escuchando entorno...";
-                    document.getElementById('api-data').style.color = "#69f0ae";
-                    isAnalyzing = false;
-                }, 1200);
-
-            } catch (err) {
-                document.getElementById('api-data').innerText = "API: Error de conexión en campo";
-                document.getElementById('api-data').style.color = "#ff007c";
-                isAnalyzing = false;
-            }
-        }
-
-        function displayDetection(birdName, conf) {
-            const feed = document.getElementById('feed');
-            feed.innerHTML = `<div class="card"><strong>${birdName}</strong><br>Certeza: ${conf}% (BirdNET Cloud)</div>` + feed.innerHTML;
-            if(feed.children.length > 3) feed.removeChild(feed.lastChild);
-
-            // Crear pirámide rosa neón en la posición
-            const ecoMat = new THREE.MeshBasicMaterial({ color: 0xff007c, wireframe: true, transparent: true, opacity: 1 });
-            const ecoPin = new THREE.Mesh(new THREE.ConeGeometry(1.5, 3, 4), ecoMat);
-            ecoPin.position.set((Math.random() - 0.5) * 40, 5, (Math.random() - 0.5) * 40);
-            ecoPin.userData = { spawnTime: clock.getElapsedTime() }; 
-            
-            worldGroup.add(ecoPin);
-            pyramids.push(ecoPin);
-        }
-
-        // --- 5. BUCLE DE RENDERIZADO 3D ---
-        const clock = new THREE.Clock();
-
-        function animate() {
-            requestAnimationFrame(animate);
-            const time = clock.getElapsedTime();
-
-            radarZ += 1.5;
-            if (radarZ > mapSize/2) radarZ = -mapSize/2;
-            radarLaser.position.z = radarZ;
-
-            // Desvanecimiento de pirámides
-            for (let i = pyramids.length - 1; i >= 0; i--) {
-                let p = pyramids[i];
-                let age = time - p.userData.spawnTime;
-
-                if (Math.abs(p.position.z - radarZ) < 2.0) {
-                    p.scale.set(1.8, 1.8, 1.8);
-                    p.material.color.setHex(0xffffff);
-                } else {
-                    p.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
-                    p.material.color.lerp(new THREE.Color(0xff007c), 0.1);
+                    board.appendChild(cell);
                 }
+            }
+            updateBoardVisuals();
+        }
 
-                if (age > 12) {
-                    p.material.opacity = Math.max(0, 1 - (age - 12) / 4);
-                    if (age > 16) {
-                        worldGroup.remove(p);
-                        p.geometry.dispose();
-                        p.material.dispose();
-                        pyramids.splice(i, 1);
+        function handleInteraction(e, r, c) {
+            if (isGameOver || e.button === 2) return;
+            isFlagMode ? handleFlag(r, c) : revealCell(r, c);
+        }
+
+        function handleFlag(r, c) {
+            if (isGameOver || revealed[r][c]) return;
+            flags[r][c] = !flags[r][c];
+            minesLeft += flags[r][c] ? -1 : 1;
+            updateFlagDisplay();
+            updateBoardVisuals();
+        }
+
+        function revealCell(r, c) {
+            if (isGameOver || revealed[r][c] || flags[r][c]) return;
+            if (firstClick) { placeMines(r, c); firstClick = false; }
+            revealed[r][c] = true;
+
+            if (grid[r][c] === 'M') { gameOver(false); return; }
+            if (grid[r][c] === 0) {
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        let nr = r + dr, nc = c + dc;
+                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) revealCell(nr, nc);
                     }
                 }
             }
-
-            // Visualizador PIP con gradiente
-            if (isListening) {
-                analyser.getByteFrequencyData(dataArray);
-                const pipPos = blobMesh.geometry.attributes.position;
-                const pipCol = blobMesh.geometry.attributes.color;
-
-                for (let i = 0; i < pipPos.count; i++) {
-                    const ox = originalBlobPos[i*3], oy = originalBlobPos[i*3+1], oz = originalBlobPos[i*3+2];
-                    const vertex = new THREE.Vector3(ox, oy, oz).normalize();
-                    
-                    const audioVal = dataArray[i % dataArray.length] / 255.0; 
-                    const displacement = 4 + (audioVal * 6);
-                    
-                    vertex.multiplyScalar(displacement);
-                    pipPos.setXYZ(i, vertex.x, vertex.y, vertex.z);
-
-                    const factor = Math.min((displacement - 4) / 4, 1.0);
-                    pipCol.setXYZ(i, 0.0 + factor, 0.95 - (0.95 * factor), 1.0 - (0.52 * factor));
-                }
-                pipPos.needsUpdate = true;
-                pipCol.needsUpdate = true;
-                blobMesh.rotation.y += 0.01;
-            }
-
-            userPin.rotation.y -= 0.02;
-            controlsMap.update();
-            rendererMap.render(sceneMap, cameraMap);
-            rendererPip.render(scenePip, cameraPip);
+            updateBoardVisuals(); checkWin();
         }
 
-        document.getElementById('startBtn').addEventListener('click', () => {
-            if (!isListening) startSystem();
-        });
+        function updateBoardVisuals() {
+            const cells = document.getElementById('board').children;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const el = cells[r * cols + c];
+                    el.className = 'cell'; el.innerHTML = '';
+                    if (revealed[r][c]) {
+                        el.classList.add('revealed');
+                        if (grid[r][c] === 'M') el.classList.add('mine');
+                        else if (grid[r][c] > 0) { el.innerText = grid[r][c]; el.style.color = `var(--c${grid[r][c]})`; }
+                    } else if (flags[r][c]) {
+                        el.classList.add('flag');
+                    }
+                }
+            }
+        }
 
-        animate();
+        function gameOver(win) {
+            isGameOver = true; clearInterval(timerInterval);
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) { if (grid[r][c] === 'M') revealed[r][c] = true; }
+            }
+            updateBoardVisuals();
+            
+            if (win) {
+                const currentRecord = bestTimes[currentDiff];
+                if (!currentRecord || timer < currentRecord) {
+                    bestTimes[currentDiff] = timer;
+                    localStorage.setItem('minimalMinesweeperBestTimes', JSON.stringify(bestTimes));
+                }
+                setTimeout(() => alert(`¡Geometría completada en ${timer}s!`), 300);
+            } else {
+                if(navigator.vibrate) navigator.vibrate([100, 50, 100]); // Patrón de detonación
+                setTimeout(() => alert("Mina detonada. Inténtalo de nuevo."), 300);
+            }
+        }
+
+        function checkWin() {
+            let revealedCount = 0;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) { if (revealed[r][c]) revealedCount++; }
+            }
+            if (revealedCount === (rows * cols) - totalMines) gameOver(true);
+        }
     </script>
 </body>
 </html>
