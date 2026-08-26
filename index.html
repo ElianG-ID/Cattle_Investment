@@ -36,7 +36,7 @@
         /* TOGGLE MINIMALISTA (SVG) */
         .top-bar { width: 100%; display: flex; justify-content: flex-end; padding: 20px; box-sizing: border-box; position: absolute; top: 0; z-index: 10;}
         .mode-toggle { background: var(--surface); border: 1px solid var(--cell-hidden); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; color: var(--text-main); backdrop-filter: blur(10px); }
-        .mode-toggle svg { width: 20px; height: 20px; fill: currentColor; }
+        .mode-toggle svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .mode-toggle:active { transform: scale(0.9); }
 
         #start-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; transition: opacity 0.4s ease; z-index: 2; }
@@ -63,6 +63,7 @@
         .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; transition: background 0.4s; border: 1px solid rgba(255,255,255,0.1); }
         .stat { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; transition: color 0.3s;}
         .stat.success { color: var(--success); }
+        .stat.danger { color: var(--accent); } /* QoL: Color rojo si hay banderas negativas */
         
         .toggle-btn { background: var(--cell-hidden); border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; gap: 8px; color: var(--text-main); }
         .toggle-btn.flag-mode { background: var(--accent); color: #FFF; }
@@ -74,18 +75,29 @@
         .cell:active { transform: scale(0.85); filter: brightness(0.9); }
         .cell.revealed { background: var(--cell-revealed); cursor: default; transform: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);}
         
-        .mine-svg { width: 65%; height: 65%; color: var(--accent); transition: color 0.3s; }
+        .mine-svg { width: 65%; height: 65%; color: var(--text-muted); transition: color 0.3s; }
         .cell.flag::after { content: '▲'; color: var(--accent); font-size: 16px; text-shadow: 0 2px 4px rgba(0,0,0,0.15); }
 
         @keyframes explode { 0% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.4); background-color: var(--accent); z-index: 10; box-shadow: 0 0 20px var(--accent); } 100% { transform: scale(1); background-color: var(--accent); } }
-        .cell.exploded { animation: explode 0.4s ease-out forwards; position: relative; z-index: 10; background-color: var(--accent) !important; }
+        
+        /* QoL: Resaltar la mina que detonaste */
+        .cell.exploded { animation: explode 0.5s ease-out forwards; position: relative; z-index: 10; background-color: var(--accent) !important; }
         .cell.exploded .mine-svg { color: #FFF; }
 
-        .bottom-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center;}
-        .back-btn, .restart-btn { background: var(--surface); border: 2px solid var(--text-muted); color: var(--text-main); padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s;}
-        .restart-btn { display: none; border-color: var(--primary); color: var(--primary); }
-        .restart-btn.visible { display: block; }
-        .restart-btn:active { transform: scale(0.95); }
+        /* OVERLAY DE REINTENTO (Glassmorphism) */
+        .overlay-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 50; opacity: 0; transition: opacity 0.4s ease; border-radius: 20px;
+        }
+        .overlay-screen.active { display: flex; opacity: 1; }
+        .overlay-title { font-size: 32px; font-weight: 900; margin-bottom: 20px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); text-align: center;}
+        
+        .overlay-btn { margin: 8px; width: 220px; padding: 14px; border-radius: 30px; font-weight: bold; font-size: 16px; cursor: pointer; border: none; transition: transform 0.2s;}
+        .overlay-btn.primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .overlay-btn.secondary { background: var(--surface); color: var(--text-main); border: 2px solid var(--text-muted); }
+        .overlay-btn:active { transform: scale(0.95); }
 
         @media (max-width: 500px) {
             .cell { width: 28px; height: 28px; font-size: 14px; }
@@ -98,11 +110,25 @@
 
     <div id="bg-anim"></div>
 
-    <!-- Toggle Minimalista SVG -->
+    <!-- Toggle Minimalista SVG Lineal -->
     <div class="top-bar">
         <button class="mode-toggle" id="mode-toggle-btn" onclick="toggleLightDarkMode()">
-            <svg id="icon-sun" viewBox="0 0 24 24" style="display:none;"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-14a1 1 0 0 0-1 1v2a1 1 0 1 0 2 0V2a1 1 0 0 0-1-1zm0 18a1 1 0 0 0-1 1v2a1 1 0 1 0 2 0v-2a1 1 0 0 0-1-1zM5 12a1 1 0 0 0-1-1H2a1 1 0 1 0 0 2h2a1 1 0 0 0 1-1zm17-1h-2a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2zM6.05 4.636a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414L6.05 4.636zm13.314 13.314a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414zM4.636 17.95a1 1 0 0 0 1.414 1.414l1.414-1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414zm13.314-13.314a1 1 0 0 0 1.414-1.414l-1.414-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414z"/></svg>
-            <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21.752 15.002A9.718 9.718 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.42.305-2.77 1.002-3.998A9.75 9.75 0 0 0 2.25 12c0 5.385 4.365 9.75 9.75 9.75a9.75 9.75 0 0 0 9.752-6.748z"/></svg>
+            <!-- Sol Minimalista (Líneas) -->
+            <svg id="icon-sun" viewBox="0 0 24 24" style="display:none;">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <!-- Luna Minimalista -->
+            <svg id="icon-moon" viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
         </button>
     </div>
 
@@ -131,23 +157,26 @@
             <button id="mode-toggle" class="toggle-btn" onclick="toggleMode()">⛏ DIG</button>
             <div class="stat" id="flag-stat">▲ <span id="flag-count">10</span></div>
         </div>
-        <div class="board-wrapper"><div id="board"></div></div>
-        
-        <div class="bottom-actions">
-            <button class="back-btn" onclick="showStartScreen()">SALIR</button>
-            <button class="restart-btn" id="restart-btn" onclick="startGame()">REINTENTAR</button>
+        <div class="board-wrapper">
+            <div id="board"></div>
+            
+            <!-- OVERLAY REINTENTO FLOTANTE -->
+            <div id="game-overlay" class="overlay-screen">
+                <h2 id="overlay-msg" class="overlay-title">¡Mina Detonada!</h2>
+                <button class="overlay-btn primary" onclick="startGame()">REINTENTAR</button>
+                <button class="overlay-btn secondary" onclick="showStartScreen()">VOLVER AL MENÚ</button>
+            </div>
         </div>
     </div>
 
     <script>
         const mineIconHTML = `<svg viewBox='0 0 100 100' class='mine-svg'><circle cx='50' cy='50' r='32' fill='currentColor'/><circle cx='40' cy='38' r='6' fill='transparent'/><path d='M50 12 L50 2 M77 23 L84 16 M88 50 L98 50 M77 77 L84 84 M50 88 L50 98 M23 77 L16 84 M12 50 L2 50 M23 23 L16 16' stroke='currentColor' stroke-width='8' stroke-linecap='round'/></svg>`;
 
-        // Reglas de Minesweeper Online
         const difficulties = [
             { name: 'BEGINNER', rows: 9, cols: 9, mines: 10 },
             { name: 'INTERMEDIATE', rows: 16, cols: 16, mines: 40 },
             { name: 'EXPERT', rows: 16, cols: 30, mines: 99 },
-            { name: 'EVIL', rows: 24, cols: 30, mines: 160 } // Layout extendido
+            { name: 'EVIL', rows: 24, cols: 30, mines: 160 }
         ];
 
         const lightThemes = { 'alba': 'Alba Clásica', 'tarde': 'Tarde Cálida', 'sakura': 'Sakura Minimal', 'brisa': 'Brisa Matutina', 'arena': 'Arena Suave' };
@@ -160,8 +189,6 @@
         let grid = [], revealed = [], flags = [];
         let rows, cols, totalMines, minesLeft, timer = 0, timerInterval;
         let isGameOver = false, firstClick = true, isFlagMode = false;
-        
-        let touchTimer = null, touchStarted = false;
 
         const slider = document.getElementById('diff-slider');
         const label = document.getElementById('diff-label');
@@ -213,6 +240,7 @@
 
         function showStartScreen() {
             clearInterval(timerInterval);
+            document.getElementById('game-overlay').classList.remove('active');
             document.querySelector('.top-bar').style.display = 'flex';
             document.getElementById('game-screen').style.opacity = '0';
             setTimeout(() => {
@@ -226,7 +254,7 @@
         function startGame() {
             applyRandomTheme(); 
             updateStartScreenUI();
-            document.getElementById('restart-btn').classList.remove('visible');
+            document.getElementById('game-overlay').classList.remove('active');
 
             const config = difficulties[currentDiff];
             rows = config.rows; cols = config.cols; totalMines = config.mines;
@@ -255,7 +283,11 @@
         function updateFlagDisplay() {
             document.getElementById('flag-count').innerText = minesLeft;
             const stat = document.getElementById('flag-stat');
-            minesLeft === 0 ? stat.classList.add('success') : stat.classList.remove('success');
+            
+            // QoL: Cambiar color si las banderas son negativas
+            stat.classList.remove('success', 'danger');
+            if (minesLeft === 0) stat.classList.add('success');
+            else if (minesLeft < 0) stat.classList.add('danger');
         }
 
         function initGrid() {
@@ -266,21 +298,17 @@
 
         function placeMines(firstR, firstC) {
             let minesPlaced = 0;
-            // No Guessing mode: El primer click garantiza un 0 y un área limpia alrededor
             const safeDistance = gameMode === 'noguess' ? 1 : 0; 
 
             while (minesPlaced < totalMines) {
                 let r = Math.floor(Math.random() * rows);
                 let c = Math.floor(Math.random() * cols);
-                
-                // Respetar reglas de generación según el modo
                 if (grid[r][c] !== 'M' && Math.max(Math.abs(r - firstR), Math.abs(c - firstC)) > safeDistance) {
                     grid[r][c] = 'M';
                     minesPlaced++;
                 }
             }
 
-            // Calculo seguro de números perimetrales verificando límites de array para evitar bugs
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 'M') continue;
@@ -310,37 +338,41 @@
                     const cell = document.createElement('div');
                     cell.className = 'cell';
                     
-                    // Lógica táctil precisa para 500ms
+                    // LÓGICA TÁCTIL CORREGIDA Y DEFINITIVA
+                    let pressTimer;
+                    let touchFiredFlag = false;
+
                     cell.addEventListener('touchstart', (e) => {
-                        if (isGameOver) return;
-                        touchStarted = true;
-                        touchTimer = setTimeout(() => {
-                            if(touchStarted) {
-                                handleFlag(r, c);
-                                if(navigator.vibrate) navigator.vibrate(50);
-                                touchStarted = false; // Cancela el click posterior
-                            }
+                        if (isGameOver || revealed[r][c]) return;
+                        touchFiredFlag = false;
+                        
+                        pressTimer = setTimeout(() => {
+                            touchFiredFlag = true;
+                            handleFlag(r, c);
+                            if (navigator.vibrate) navigator.vibrate(50);
                         }, 500);
-                    }, {passive: true});
+                    }, { passive: true });
 
                     cell.addEventListener('touchmove', () => { 
-                        touchStarted = false; clearTimeout(touchTimer); 
-                    }, {passive: true});
+                        clearTimeout(pressTimer); 
+                    }, { passive: true });
 
                     cell.addEventListener('touchend', (e) => {
-                        clearTimeout(touchTimer);
-                        if (touchStarted) {
-                            // Fue un tap corto normal
-                            touchStarted = false;
-                            handleInteraction(r, c);
+                        clearTimeout(pressTimer);
+                        // Si el temporizador de 500ms se cumplió, bloqueamos el comportamiento por defecto (click)
+                        if (touchFiredFlag) {
+                            if (e.cancelable) e.preventDefault();
                         }
-                    });
+                    }, { passive: false }); // Debe ser false para permitir preventDefault()
 
-                    // Eventos de Mouse (Desktop)
-                    cell.addEventListener('mousedown', (e) => {
-                        if(e.button !== 0) return; // Ignorar si no es clic izquierdo
+                    // Evento Clic Universal (Escritorio + Móvil Taps Cortos)
+                    cell.addEventListener('click', (e) => {
+                        // Si ya colocamos la bandera por touch, ignoramos el click
+                        if (touchFiredFlag) return;
                         handleInteraction(r, c);
                     });
+
+                    // Evento Clic Derecho (Escritorio)
                     cell.addEventListener('contextmenu', (e) => { 
                         e.preventDefault(); 
                         handleFlag(r, c); 
@@ -359,7 +391,7 @@
                 handleFlag(r, c);
             } else {
                 if (revealed[r][c] && grid[r][c] > 0) {
-                    chordCell(r, c); // Aplicar Chording si ya está revelada
+                    chordCell(r, c);
                 } else {
                     revealCell(r, c);
                 }
@@ -374,10 +406,8 @@
             updateBoardVisuals();
         }
 
-        // Lógica de Chording oficial
         function chordCell(r, c) {
             let flagCount = 0;
-            // Contar banderas adyacentes verificando límites
             for (let dr = -1; dr <= 1; dr++) {
                 for (let dc = -1; dc <= 1; dc++) {
                     let nr = r + dr, nc = c + dc;
@@ -387,7 +417,6 @@
                 }
             }
             
-            // Si las banderas coinciden con el número, revelar resto
             if (flagCount === grid[r][c]) {
                 for (let dr = -1; dr <= 1; dr++) {
                     for (let dc = -1; dc <= 1; dc++) {
@@ -431,6 +460,12 @@
                         el.classList.add('revealed');
                         if (grid[r][c] === 'M' && !isExploded) {
                             el.innerHTML = mineIconHTML;
+                        } else if (grid[r][c] === 'X') {
+                            // Bandera incorrecta al perder
+                            el.innerHTML = mineIconHTML;
+                            el.style.color = "var(--text-muted)";
+                            el.style.opacity = "0.5";
+                            el.style.background = "rgba(255,0,0,0.2)";
                         } else if (grid[r][c] > 0) { 
                             el.innerText = grid[r][c]; 
                             el.style.color = `var(--c${grid[r][c]})`; 
@@ -444,21 +479,20 @@
 
         function gameOver(win, clickedRow, clickedCol) {
             isGameOver = true; clearInterval(timerInterval);
-            document.getElementById('restart-btn').classList.add('visible'); // Mostrar botón reiniciar
             
-            // Revelar minas
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) { 
                     if (grid[r][c] === 'M' && !flags[r][c]) revealed[r][c] = true; 
-                    // Mostrar minas equivocadas
                     if (grid[r][c] !== 'M' && flags[r][c]) {
                         revealed[r][c] = true;
-                        grid[r][c] = 'X'; // Marca de error visual
+                        grid[r][c] = 'X'; 
                     }
                 }
             }
             
             updateBoardVisuals();
+            const overlay = document.getElementById('game-overlay');
+            const msg = document.getElementById('overlay-msg');
             
             if (win) {
                 const currentRecord = bestTimes[currentDiff];
@@ -466,15 +500,23 @@
                     bestTimes[currentDiff] = timer;
                     localStorage.setItem('minimalMinesweeperBestTimes', JSON.stringify(bestTimes));
                 }
-                setTimeout(() => alert(`¡Geometría completada en ${timer}s!`), 300);
+                msg.innerText = `¡Completado en ${timer}s!`;
+                msg.style.color = "var(--success)";
             } else {
                 if (clickedRow !== undefined && clickedCol !== undefined) {
                     const el = document.getElementById('board').children[clickedRow * cols + clickedCol];
                     el.innerHTML = mineIconHTML;
-                    el.classList.add('exploded');
+                    el.classList.add('exploded'); // QoL: Hace saltar la animación de detonación roja
                 }
                 if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
+                msg.innerText = "¡Mina Detonada!";
+                msg.style.color = "var(--accent)";
             }
+
+            // Mostrar el Overlay de Reintento después de 1 segundo
+            setTimeout(() => {
+                overlay.classList.add('active');
+            }, 1000);
         }
 
         function checkWin() {
