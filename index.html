@@ -11,175 +11,81 @@
         /* =========================================
            TEMAS LIGHT (DÍA)
            ========================================= */
-        [data-theme="alba"] {
-            --bg-grad1: #F0EEE9; --bg-grad2: #E3DFD6; --surface: rgba(255, 255, 255, 0.7); --cell-hidden: #E3DFD6; --cell-revealed: #F9F8F6;
-            --text-main: #333333; --text-muted: #888888; --accent: #FF6B6B; --primary: #4ECDC4; --success: #A8E6CF;
-            --c1: #4ECDC4; --c2: #65C59F; --c3: #FFB37C; --c4: #FFAAA5; --c5: #FF8B94; --c6: #C5A3FF; --c7: #9D9D9D; --c8: #333333;
-        }
-        [data-theme="tarde"] {
-            --bg-grad1: #F4ECE1; --bg-grad2: #EAD8C3; --surface: rgba(250, 250, 250, 0.7); --cell-hidden: #E3D5C5; --cell-revealed: #FDFBF8;
-            --text-main: #4A4A4A; --text-muted: #9B9B9B; --accent: #F26457; --primary: #5289B5; --success: #88C5A8;
-            --c1: #5289B5; --c2: #6E9B78; --c3: #E08A56; --c4: #D36C70; --c5: #C45564; --c6: #9B7EB2; --c7: #858585; --c8: #2C2C2C;
-        }
-        [data-theme="sakura"] {
-            --bg-grad1: #FDF6F5; --bg-grad2: #F4E1E1; --surface: rgba(255, 255, 255, 0.7); --cell-hidden: #F4E1E1; --cell-revealed: #FCF1F1;
-            --text-main: #5D5D5D; --text-muted: #BDBDBD; --accent: #FF9A9E; --primary: #A1C4FD; --success: #C2E9FB;
-            --c1: #A1C4FD; --c2: #C2E9FB; --c3: #FBC2EB; --c4: #FFB199; --c5: #FF9A9E; --c6: #D4FC79; --c7: #A9A9A9; --c8: #333333;
-        }
-        [data-theme="brisa"] {
-            --bg-grad1: #E0F7FA; --bg-grad2: #B2EBF2; --surface: rgba(255, 255, 255, 0.6); --cell-hidden: #B2EBF2; --cell-revealed: #F1FDFE;
-            --text-main: #263238; --text-muted: #78909C; --accent: #FF5252; --primary: #00BCD4; --success: #4CAF50;
-            --c1: #00BCD4; --c2: #4CAF50; --c3: #FFC107; --c4: #FF9800; --c5: #FF5252; --c6: #7E57C2; --c7: #607D8B; --c8: #212121;
-        }
-        [data-theme="arena"] {
-            --bg-grad1: #F5F5DC; --bg-grad2: #E8E8D0; --surface: rgba(255, 255, 255, 0.6); --cell-hidden: #DCDCAA; --cell-revealed: #FAFAD2;
-            --text-main: #4E342E; --text-muted: #8D6E63; --accent: #D84315; --primary: #5D4037; --success: #81C784;
-            --c1: #5D4037; --c2: #81C784; --c3: #FFB300; --c4: #F4511E; --c5: #D84315; --c6: #8E24AA; --c7: #795548; --c8: #3E2723;
-        }
+        [data-theme="alba"] { --bg-grad1: #F0EEE9; --bg-grad2: #E3DFD6; --surface: rgba(255, 255, 255, 0.7); --cell-hidden: #E3DFD6; --cell-revealed: #F9F8F6; --text-main: #333333; --text-muted: #888888; --accent: #FF6B6B; --primary: #4ECDC4; --success: #A8E6CF; --c1: #4ECDC4; --c2: #65C59F; --c3: #FFB37C; --c4: #FFAAA5; --c5: #FF8B94; --c6: #C5A3FF; --c7: #9D9D9D; --c8: #333333; }
+        [data-theme="tarde"] { --bg-grad1: #F4ECE1; --bg-grad2: #EAD8C3; --surface: rgba(250, 250, 250, 0.7); --cell-hidden: #E3D5C5; --cell-revealed: #FDFBF8; --text-main: #4A4A4A; --text-muted: #9B9B9B; --accent: #F26457; --primary: #5289B5; --success: #88C5A8; --c1: #5289B5; --c2: #6E9B78; --c3: #E08A56; --c4: #D36C70; --c5: #C45564; --c6: #9B7EB2; --c7: #858585; --c8: #2C2C2C; }
+        [data-theme="sakura"] { --bg-grad1: #FDF6F5; --bg-grad2: #F4E1E1; --surface: rgba(255, 255, 255, 0.7); --cell-hidden: #F4E1E1; --cell-revealed: #FCF1F1; --text-main: #5D5D5D; --text-muted: #BDBDBD; --accent: #FF9A9E; --primary: #A1C4FD; --success: #C2E9FB; --c1: #A1C4FD; --c2: #C2E9FB; --c3: #FBC2EB; --c4: #FFB199; --c5: #FF9A9E; --c6: #D4FC79; --c7: #A9A9A9; --c8: #333333; }
+        [data-theme="brisa"] { --bg-grad1: #E0F7FA; --bg-grad2: #B2EBF2; --surface: rgba(255, 255, 255, 0.6); --cell-hidden: #B2EBF2; --cell-revealed: #F1FDFE; --text-main: #263238; --text-muted: #78909C; --accent: #FF5252; --primary: #00BCD4; --success: #4CAF50; --c1: #00BCD4; --c2: #4CAF50; --c3: #FFC107; --c4: #FF9800; --c5: #FF5252; --c6: #7E57C2; --c7: #607D8B; --c8: #212121; }
+        [data-theme="arena"] { --bg-grad1: #F5F5DC; --bg-grad2: #E8E8D0; --surface: rgba(255, 255, 255, 0.6); --cell-hidden: #DCDCAA; --cell-revealed: #FAFAD2; --text-main: #4E342E; --text-muted: #8D6E63; --accent: #D84315; --primary: #5D4037; --success: #81C784; --c1: #5D4037; --c2: #81C784; --c3: #FFB300; --c4: #F4511E; --c5: #D84315; --c6: #8E24AA; --c7: #795548; --c8: #3E2723; }
 
         /* =========================================
            TEMAS DARK (NOCHE)
            ========================================= */
-        [data-theme="noche"] {
-            --bg-grad1: #242436; --bg-grad2: #1A1A28; --surface: rgba(50, 50, 74, 0.7); --cell-hidden: #45455E; --cell-revealed: #2C2C40;
-            --text-main: #E0E0E0; --text-muted: #8B8B9E; --accent: #FF6480; --primary: #7582D2; --success: #67E0A3;
-            --c1: #7582D2; --c2: #67E0A3; --c3: #FFC073; --c4: #FF8BA0; --c5: #FF4A6B; --c6: #B794F6; --c7: #B8B8C7; --c8: #FFFFFF;
-        }
-        [data-theme="abismo"] {
-            --bg-grad1: #020205; --bg-grad2: #0B0B14; --surface: rgba(17, 34, 51, 0.7); --cell-hidden: #112233; --cell-revealed: #050A14;
-            --text-main: #00F3FF; --text-muted: #006688; --accent: #FF007C; --primary: #00F3FF; --success: #00FFAA;
-            --c1: #00F3FF; --c2: #00FFAA; --c3: #FFD700; --c4: #FF7700; --c5: #FF007C; --c6: #9D00FF; --c7: #555577; --c8: #FFFFFF;
-        }
-        [data-theme="ocaso"] {
-            --bg-grad1: #2B2129; --bg-grad2: #1F171D; --surface: rgba(58, 44, 56, 0.7); --cell-hidden: #523A4D; --cell-revealed: #332731;
-            --text-main: #F4E8D3; --text-muted: #9E8596; --accent: #FF7B54; --primary: #FFB26B; --success: #FFD56B;
-            --c1: #FFB26B; --c2: #FFD56B; --c3: #FF7B54; --c4: #E55B5B; --c5: #A24963; --c6: #735377; --c7: #A8A8B3; --c8: #FFFFFF;
-        }
-        [data-theme="bosque"] {
-            --bg-grad1: #1A2118; --bg-grad2: #121711; --surface: rgba(39, 48, 36, 0.7); --cell-hidden: #384234; --cell-revealed: #1F261D;
-            --text-main: #E2E8DF; --text-muted: #84917E; --accent: #FFB703; --primary: #8CB369; --success: #A7C957;
-            --c1: #8CB369; --c2: #A7C957; --c3: #F4A261; --c4: #E76F51; --c5: #D62828; --c6: #B56576; --c7: #6C7A89; --c8: #FDFCDC;
-        }
-        [data-theme="ebano"] {
-            --bg-grad1: #0F0F0F; --bg-grad2: #050505; --surface: rgba(30, 30, 30, 0.7); --cell-hidden: #2A2A2A; --cell-revealed: #161616;
-            --text-main: #FFFFFF; --text-muted: #888888; --accent: #BB86FC; --primary: #03DAC6; --success: #CF6679;
-            --c1: #03DAC6; --c2: #4CAF50; --c3: #FFEB3B; --c4: #FF9800; --c5: #F44336; --c6: #E040FB; --c7: #9E9E9E; --c8: #FFFFFF;
-        }
+        [data-theme="noche"] { --bg-grad1: #242436; --bg-grad2: #1A1A28; --surface: rgba(50, 50, 74, 0.7); --cell-hidden: #45455E; --cell-revealed: #2C2C40; --text-main: #E0E0E0; --text-muted: #8B8B9E; --accent: #FF6480; --primary: #7582D2; --success: #67E0A3; --c1: #7582D2; --c2: #67E0A3; --c3: #FFC073; --c4: #FF8BA0; --c5: #FF4A6B; --c6: #B794F6; --c7: #B8B8C7; --c8: #FFFFFF; }
+        [data-theme="abismo"] { --bg-grad1: #020205; --bg-grad2: #0B0B14; --surface: rgba(17, 34, 51, 0.7); --cell-hidden: #112233; --cell-revealed: #050A14; --text-main: #00F3FF; --text-muted: #006688; --accent: #FF007C; --primary: #00F3FF; --success: #00FFAA; --c1: #00F3FF; --c2: #00FFAA; --c3: #FFD700; --c4: #FF7700; --c5: #FF007C; --c6: #9D00FF; --c7: #555577; --c8: #FFFFFF; }
+        [data-theme="ocaso"] { --bg-grad1: #2B2129; --bg-grad2: #1F171D; --surface: rgba(58, 44, 56, 0.7); --cell-hidden: #523A4D; --cell-revealed: #332731; --text-main: #F4E8D3; --text-muted: #9E8596; --accent: #FF7B54; --primary: #FFB26B; --success: #FFD56B; --c1: #FFB26B; --c2: #FFD56B; --c3: #FF7B54; --c4: #E55B5B; --c5: #A24963; --c6: #735377; --c7: #A8A8B3; --c8: #FFFFFF; }
+        [data-theme="bosque"] { --bg-grad1: #1A2118; --bg-grad2: #121711; --surface: rgba(39, 48, 36, 0.7); --cell-hidden: #384234; --cell-revealed: #1F261D; --text-main: #E2E8DF; --text-muted: #84917E; --accent: #FFB703; --primary: #8CB369; --success: #A7C957; --c1: #8CB369; --c2: #A7C957; --c3: #F4A261; --c4: #E76F51; --c5: #D62828; --c6: #B56576; --c7: #6C7A89; --c8: #FDFCDC; }
+        [data-theme="ebano"] { --bg-grad1: #0F0F0F; --bg-grad2: #050505; --surface: rgba(30, 30, 30, 0.7); --cell-hidden: #2A2A2A; --cell-revealed: #161616; --text-main: #FFFFFF; --text-muted: #888888; --accent: #BB86FC; --primary: #03DAC6; --success: #CF6679; --c1: #03DAC6; --c2: #4CAF50; --c3: #FFEB3B; --c4: #FF9800; --c5: #F44336; --c6: #E040FB; --c7: #9E9E9E; --c8: #FFFFFF; }
 
-        /* =========================================
-           ESTILOS GENERALES Y ANIMACIONES
-           ========================================= */
-        body, html {
-            margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif;
-            color: var(--text-main); height: 100vh;
-            display: flex; flex-direction: column; align-items: center; overflow: hidden;
-            user-select: none; -webkit-user-select: none; transition: color 0.8s ease;
-        }
+        body, html { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; color: var(--text-main); height: 100vh; display: flex; flex-direction: column; align-items: center; overflow: hidden; user-select: none; -webkit-user-select: none; transition: color 0.8s ease; }
 
-        /* FONDO LÍQUIDO */
-        #bg-anim {
-            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, var(--bg-grad1), var(--bg-grad2), var(--bg-grad1));
-            background-size: 400% 400%; z-index: -1; transition: background 1s ease;
-            animation: liquidGradient 20s ease infinite alternate;
-        }
-        @keyframes liquidGradient {
-            0% { background-position: 0% 50%; transform: rotate(0deg); }
-            50% { background-position: 100% 50%; transform: rotate(2deg); }
-            100% { background-position: 0% 50%; transform: rotate(-2deg); }
-        }
+        #bg-anim { position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, var(--bg-grad1), var(--bg-grad2), var(--bg-grad1)); background-size: 400% 400%; z-index: -1; transition: background 1s ease; animation: liquidGradient 20s ease infinite alternate; }
+        @keyframes liquidGradient { 0% { background-position: 0% 50%; transform: rotate(0deg); } 50% { background-position: 100% 50%; transform: rotate(2deg); } 100% { background-position: 0% 50%; transform: rotate(-2deg); } }
 
-        /* EFECTO CRISTAL (GLASSMORPHISM) */
-        .glass-panel {
-            background: var(--surface);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px; padding: 30px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-            display: flex; flex-direction: column; align-items: center; transition: background 0.4s;
-        }
+        .glass-panel { background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 30px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; align-items: center; transition: background 0.4s; }
 
-        /* HEADER E INICIO */
+        /* TOGGLE MINIMALISTA (SVG) */
         .top-bar { width: 100%; display: flex; justify-content: flex-end; padding: 20px; box-sizing: border-box; position: absolute; top: 0; z-index: 10;}
-        .mode-toggle { background: var(--surface); border: 1px solid var(--cell-hidden); font-size: 20px; padding: 10px; border-radius: 50%; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(10px); box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .mode-toggle { background: var(--surface); border: 1px solid var(--cell-hidden); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; color: var(--text-main); backdrop-filter: blur(10px); }
+        .mode-toggle svg { width: 20px; height: 20px; fill: currentColor; }
         .mode-toggle:active { transform: scale(0.9); }
 
-        #start-screen {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; width: 100%; transition: opacity 0.4s ease; z-index: 2;
-        }
+        #start-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; transition: opacity 0.4s ease; z-index: 2; }
         h1 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin: 0 0 5px 0; }
-        .theme-name { font-size: 12px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
+        .theme-name { font-size: 12px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; }
         
+        .mode-selector { margin-bottom: 25px; display: flex; gap: 10px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 20px;}
+        .mode-btn { background: transparent; border: none; padding: 8px 16px; border-radius: 15px; color: var(--text-main); font-weight: bold; cursor: pointer; font-size: 14px; transition: background 0.3s;}
+        .mode-btn.active { background: var(--surface); box-shadow: 0 2px 10px rgba(0,0,0,0.1); color: var(--primary); }
+
         .slider-container { width: 100%; max-width: 250px; text-align: center; margin-bottom: 30px; }
         .difficulty-label { font-size: 20px; font-weight: 900; margin-bottom: 5px; display: block; color: var(--primary); letter-spacing: 2px; transition: color 0.4s;}
         .best-time-label { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 20px; display: block; height: 20px; }
         
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin-bottom: 15px;}
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%;
-            background: var(--primary); cursor: pointer; margin-top: -10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); transition: transform 0.2s, background 0.4s;
-        }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; margin-top: -10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); transition: transform 0.2s, background 0.4s; }
         input[type=range]::-webkit-slider-thumb:active { transform: scale(1.2); }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: var(--cell-hidden); border-radius: 2px; transition: background 0.4s;}
 
-        .btn {
-            background: var(--primary); color: #FFF; border: none; padding: 16px 40px;
-            border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); transition: all 0.3s ease; letter-spacing: 1px;
-        }
+        .btn { background: var(--primary); color: #FFF; border: none; padding: 16px 40px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); transition: all 0.3s ease; letter-spacing: 1px; }
         .btn:active { transform: translateY(2px); }
 
-        /* JUEGO */
-        #game-screen {
-            display: none; flex-direction: column; width: 100%; height: 100%;
-            max-width: 1000px; padding: 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.4s ease; z-index: 2;
-        }
-        .header {
-            display: flex; justify-content: space-between; align-items: center; background: var(--surface);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; transition: background 0.4s; border: 1px solid rgba(255,255,255,0.1);
-        }
+        #game-screen { display: none; flex-direction: column; width: 100%; height: 100%; max-width: 1000px; padding: 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.4s ease; z-index: 2; position: relative;}
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; transition: background 0.4s; border: 1px solid rgba(255,255,255,0.1); }
         .stat { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; transition: color 0.3s;}
         .stat.success { color: var(--success); }
         
-        .toggle-btn {
-            background: var(--cell-hidden); border: none; padding: 10px 20px; border-radius: 20px;
-            font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; gap: 8px; color: var(--text-main);
-        }
+        .toggle-btn { background: var(--cell-hidden); border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; gap: 8px; color: var(--text-main); }
         .toggle-btn.flag-mode { background: var(--accent); color: #FFF; }
 
-        .board-wrapper { 
-            flex-grow: 1; overflow: auto; display: flex; justify-content: center; align-items: center; 
-            border-radius: 20px; -webkit-overflow-scrolling: touch; padding: 10px;
-        }
-        
-        #board { 
-            display: grid; gap: 2px; padding: 10px; background: var(--surface); 
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.1); transition: background 0.4s;
-        }
+        .board-wrapper { flex-grow: 1; overflow: auto; display: flex; justify-content: center; align-items: center; border-radius: 20px; -webkit-overflow-scrolling: touch; padding: 10px; position: relative;}
+        #board { display: grid; gap: 2px; padding: 10px; background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.1); transition: background 0.4s; }
 
-        .cell {
-            width: 32px; height: 32px; background: var(--cell-hidden); border-radius: 6px;
-            display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 16px;
-            cursor: pointer; transition: background 0.15s, transform 0.1s;
-        }
+        .cell { width: 32px; height: 32px; background: var(--cell-hidden); border-radius: 6px; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 16px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
         .cell:active { transform: scale(0.85); filter: brightness(0.9); }
         .cell.revealed { background: var(--cell-revealed); cursor: default; transform: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);}
         
         .mine-svg { width: 65%; height: 65%; color: var(--accent); transition: color 0.3s; }
         .cell.flag::after { content: '▲'; color: var(--accent); font-size: 16px; text-shadow: 0 2px 4px rgba(0,0,0,0.15); }
 
-        @keyframes explode {
-            0% { transform: scale(1); filter: brightness(1); }
-            50% { transform: scale(1.4); background-color: var(--accent); z-index: 10; box-shadow: 0 0 20px var(--accent); }
-            100% { transform: scale(1); background-color: var(--accent); }
-        }
+        @keyframes explode { 0% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.4); background-color: var(--accent); z-index: 10; box-shadow: 0 0 20px var(--accent); } 100% { transform: scale(1); background-color: var(--accent); } }
         .cell.exploded { animation: explode 0.4s ease-out forwards; position: relative; z-index: 10; background-color: var(--accent) !important; }
         .cell.exploded .mine-svg { color: #FFF; }
 
-        .back-btn { background: var(--surface); border: 2px solid var(--text-muted); color: var(--text-main); padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 20px; align-self: center; backdrop-filter: blur(10px);}
+        .bottom-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: center;}
+        .back-btn, .restart-btn { background: var(--surface); border: 2px solid var(--text-muted); color: var(--text-main); padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s;}
+        .restart-btn { display: none; border-color: var(--primary); color: var(--primary); }
+        .restart-btn.visible { display: block; }
+        .restart-btn:active { transform: scale(0.95); }
 
         @media (max-width: 500px) {
             .cell { width: 28px; height: 28px; font-size: 14px; }
@@ -192,9 +98,12 @@
 
     <div id="bg-anim"></div>
 
-    <!-- Toggle de Día/Noche -->
+    <!-- Toggle Minimalista SVG -->
     <div class="top-bar">
-        <button class="mode-toggle" id="mode-toggle-btn" onclick="toggleLightDarkMode()">☀️</button>
+        <button class="mode-toggle" id="mode-toggle-btn" onclick="toggleLightDarkMode()">
+            <svg id="icon-sun" viewBox="0 0 24 24" style="display:none;"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-14a1 1 0 0 0-1 1v2a1 1 0 1 0 2 0V2a1 1 0 0 0-1-1zm0 18a1 1 0 0 0-1 1v2a1 1 0 1 0 2 0v-2a1 1 0 0 0-1-1zM5 12a1 1 0 0 0-1-1H2a1 1 0 1 0 0 2h2a1 1 0 0 0 1-1zm17-1h-2a1 1 0 1 0 0 2h2a1 1 0 1 0 0-2zM6.05 4.636a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414L6.05 4.636zm13.314 13.314a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414zM4.636 17.95a1 1 0 0 0 1.414 1.414l1.414-1.414a1 1 0 0 0-1.414-1.414l-1.414 1.414zm13.314-13.314a1 1 0 0 0 1.414-1.414l-1.414-1.414a1 1 0 0 0-1.414 1.414l1.414 1.414z"/></svg>
+            <svg id="icon-moon" viewBox="0 0 24 24"><path d="M21.752 15.002A9.718 9.718 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.42.305-2.77 1.002-3.998A9.75 9.75 0 0 0 2.25 12c0 5.385 4.365 9.75 9.75 9.75a9.75 9.75 0 0 0 9.752-6.748z"/></svg>
+        </button>
     </div>
 
     <div id="start-screen">
@@ -202,8 +111,13 @@
             <h1>MINESWEEPER</h1>
             <span class="theme-name" id="theme-display">Tema: Alba Clásica</span>
             
+            <div class="mode-selector">
+                <button class="mode-btn active" id="btn-standard" onclick="setGameMode('standard')">Standard Mode</button>
+                <button class="mode-btn" id="btn-noguess" onclick="setGameMode('noguess')">No Guessing</button>
+            </div>
+
             <div class="slider-container">
-                <span class="difficulty-label" id="diff-label">EASY</span>
+                <span class="difficulty-label" id="diff-label">BEGINNER</span>
                 <span class="best-time-label" id="best-time-label">Mejor tiempo: --</span>
                 <input type="range" id="diff-slider" min="0" max="3" value="0" step="1">
             </div>
@@ -218,30 +132,36 @@
             <div class="stat" id="flag-stat">▲ <span id="flag-count">10</span></div>
         </div>
         <div class="board-wrapper"><div id="board"></div></div>
-        <button class="back-btn" onclick="showStartScreen()">SALIR</button>
+        
+        <div class="bottom-actions">
+            <button class="back-btn" onclick="showStartScreen()">SALIR</button>
+            <button class="restart-btn" id="restart-btn" onclick="startGame()">REINTENTAR</button>
+        </div>
     </div>
 
     <script>
         const mineIconHTML = `<svg viewBox='0 0 100 100' class='mine-svg'><circle cx='50' cy='50' r='32' fill='currentColor'/><circle cx='40' cy='38' r='6' fill='transparent'/><path d='M50 12 L50 2 M77 23 L84 16 M88 50 L98 50 M77 77 L84 84 M50 88 L50 98 M23 77 L16 84 M12 50 L2 50 M23 23 L16 16' stroke='currentColor' stroke-width='8' stroke-linecap='round'/></svg>`;
 
+        // Reglas de Minesweeper Online
         const difficulties = [
-            { name: 'EASY', rows: 9, cols: 9, mines: 10 },
-            { name: 'MEDIUM', rows: 16, cols: 16, mines: 40 },
-            { name: 'HARD', rows: 16, cols: 30, mines: 99 },
-            { name: 'EVIL', rows: 24, cols: 30, mines: 160 }
+            { name: 'BEGINNER', rows: 9, cols: 9, mines: 10 },
+            { name: 'INTERMEDIATE', rows: 16, cols: 16, mines: 40 },
+            { name: 'EXPERT', rows: 16, cols: 30, mines: 99 },
+            { name: 'EVIL', rows: 24, cols: 30, mines: 160 } // Layout extendido
         ];
 
-        // Diccionario de temas originales
         const lightThemes = { 'alba': 'Alba Clásica', 'tarde': 'Tarde Cálida', 'sakura': 'Sakura Minimal', 'brisa': 'Brisa Matutina', 'arena': 'Arena Suave' };
         const darkThemes = { 'noche': 'Noche Estelar', 'abismo': 'Abismo Neón', 'ocaso': 'Ocaso Retro', 'bosque': 'Bosque Profundo', 'ebano': 'Ébano y Amatista' };
 
-        // Recuperar preferencias
         let isDarkMode = JSON.parse(localStorage.getItem('minimalMinesweeperDarkMode')) || false;
         let bestTimes = JSON.parse(localStorage.getItem('minimalMinesweeperBestTimes')) || {0: null, 1: null, 2: null, 3: null};
         
-        let currentDiff = 0, grid = [], revealed = [], flags = [];
+        let currentDiff = 0, gameMode = 'standard';
+        let grid = [], revealed = [], flags = [];
         let rows, cols, totalMines, minesLeft, timer = 0, timerInterval;
-        let isGameOver = false, firstClick = true, isFlagMode = false, pressTimer = null, lastFlagTime = 0;
+        let isGameOver = false, firstClick = true, isFlagMode = false;
+        
+        let touchTimer = null, touchStarted = false;
 
         const slider = document.getElementById('diff-slider');
         const label = document.getElementById('diff-label');
@@ -254,16 +174,15 @@
         }
 
         function applyRandomTheme() {
-            const btn = document.getElementById('mode-toggle-btn');
+            document.getElementById('icon-sun').style.display = isDarkMode ? 'none' : 'block';
+            document.getElementById('icon-moon').style.display = isDarkMode ? 'block' : 'none';
+
             const themePool = isDarkMode ? Object.keys(darkThemes) : Object.keys(lightThemes);
             const dictionary = isDarkMode ? darkThemes : lightThemes;
-            
             const randomTheme = themePool[Math.floor(Math.random() * themePool.length)];
+            
             document.body.dataset.theme = randomTheme;
             document.getElementById('theme-display').innerText = `Tema: ${dictionary[randomTheme]}`;
-            btn.innerText = isDarkMode ? '🌙' : '☀️';
-
-            // Actualizar color de la etiqueta de dificultad tras cambio de tema
             setTimeout(() => { label.style.color = getThemeColor(currentDiff); }, 50);
         }
 
@@ -275,6 +194,13 @@
             return styles.getPropertyValue('--c8').trim();
         }
 
+        function setGameMode(mode) {
+            gameMode = mode;
+            document.getElementById('btn-standard').classList.remove('active');
+            document.getElementById('btn-noguess').classList.remove('active');
+            document.getElementById(`btn-${mode}`).classList.add('active');
+        }
+
         function updateStartScreenUI() {
             label.innerText = difficulties[currentDiff].name;
             setTimeout(() => { label.style.color = getThemeColor(currentDiff); }, 50);
@@ -283,11 +209,7 @@
         }
 
         slider.addEventListener('input', (e) => { currentDiff = e.target.value; updateStartScreenUI(); });
-        
-        window.onload = () => { 
-            applyRandomTheme();
-            updateStartScreenUI(); 
-        };
+        window.onload = () => { applyRandomTheme(); updateStartScreenUI(); };
 
         function showStartScreen() {
             clearInterval(timerInterval);
@@ -302,8 +224,9 @@
         }
 
         function startGame() {
-            applyRandomTheme(); // Nuevo tema visual en cada partida
+            applyRandomTheme(); 
             updateStartScreenUI();
+            document.getElementById('restart-btn').classList.remove('visible');
 
             const config = difficulties[currentDiff];
             rows = config.rows; cols = config.cols; totalMines = config.mines;
@@ -343,14 +266,21 @@
 
         function placeMines(firstR, firstC) {
             let minesPlaced = 0;
+            // No Guessing mode: El primer click garantiza un 0 y un área limpia alrededor
+            const safeDistance = gameMode === 'noguess' ? 1 : 0; 
+
             while (minesPlaced < totalMines) {
                 let r = Math.floor(Math.random() * rows);
                 let c = Math.floor(Math.random() * cols);
-                if (grid[r][c] !== 'M' && Math.max(Math.abs(r - firstR), Math.abs(c - firstC)) > 1) {
+                
+                // Respetar reglas de generación según el modo
+                if (grid[r][c] !== 'M' && Math.max(Math.abs(r - firstR), Math.abs(c - firstC)) > safeDistance) {
                     grid[r][c] = 'M';
                     minesPlaced++;
                 }
             }
+
+            // Calculo seguro de números perimetrales verificando límites de array para evitar bugs
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (grid[r][c] === 'M') continue;
@@ -364,6 +294,7 @@
                     grid[r][c] = count;
                 }
             }
+            
             timerInterval = setInterval(() => {
                 timer++; document.getElementById('timer').innerText = timer.toString().padStart(3, '0');
             }, 1000);
@@ -379,30 +310,41 @@
                     const cell = document.createElement('div');
                     cell.className = 'cell';
                     
+                    // Lógica táctil precisa para 500ms
                     cell.addEventListener('touchstart', (e) => {
-                        if (isGameOver || revealed[r][c]) return;
-                        pressTimer = setTimeout(() => {
-                            handleFlag(r, c);
-                            lastFlagTime = Date.now();
-                            if(navigator.vibrate) navigator.vibrate(50);
-                            pressTimer = null;
-                        }, 500); 
+                        if (isGameOver) return;
+                        touchStarted = true;
+                        touchTimer = setTimeout(() => {
+                            if(touchStarted) {
+                                handleFlag(r, c);
+                                if(navigator.vibrate) navigator.vibrate(50);
+                                touchStarted = false; // Cancela el click posterior
+                            }
+                        }, 500);
                     }, {passive: true});
 
                     cell.addEventListener('touchmove', () => { 
-                        if(pressTimer) { clearTimeout(pressTimer); pressTimer = null; } 
+                        touchStarted = false; clearTimeout(touchTimer); 
                     }, {passive: true});
 
-                    cell.addEventListener('touchend', () => {
-                        if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-                    }, {passive: true});
-                    
-                    cell.addEventListener('click', (e) => {
-                        if (Date.now() - lastFlagTime < 300) return; 
-                        handleInteraction(r, c);
+                    cell.addEventListener('touchend', (e) => {
+                        clearTimeout(touchTimer);
+                        if (touchStarted) {
+                            // Fue un tap corto normal
+                            touchStarted = false;
+                            handleInteraction(r, c);
+                        }
                     });
 
-                    cell.addEventListener('contextmenu', (e) => { e.preventDefault(); handleFlag(r, c); });
+                    // Eventos de Mouse (Desktop)
+                    cell.addEventListener('mousedown', (e) => {
+                        if(e.button !== 0) return; // Ignorar si no es clic izquierdo
+                        handleInteraction(r, c);
+                    });
+                    cell.addEventListener('contextmenu', (e) => { 
+                        e.preventDefault(); 
+                        handleFlag(r, c); 
+                    });
                     
                     board.appendChild(cell);
                 }
@@ -412,7 +354,16 @@
 
         function handleInteraction(r, c) {
             if (isGameOver) return;
-            isFlagMode ? handleFlag(r, c) : revealCell(r, c);
+            
+            if (isFlagMode) {
+                handleFlag(r, c);
+            } else {
+                if (revealed[r][c] && grid[r][c] > 0) {
+                    chordCell(r, c); // Aplicar Chording si ya está revelada
+                } else {
+                    revealCell(r, c);
+                }
+            }
         }
 
         function handleFlag(r, c) {
@@ -421,6 +372,32 @@
             minesLeft += flags[r][c] ? -1 : 1;
             updateFlagDisplay();
             updateBoardVisuals();
+        }
+
+        // Lógica de Chording oficial
+        function chordCell(r, c) {
+            let flagCount = 0;
+            // Contar banderas adyacentes verificando límites
+            for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                    let nr = r + dr, nc = c + dc;
+                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && flags[nr][nc]) {
+                        flagCount++;
+                    }
+                }
+            }
+            
+            // Si las banderas coinciden con el número, revelar resto
+            if (flagCount === grid[r][c]) {
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        let nr = r + dr, nc = c + dc;
+                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && !flags[nr][nc] && !revealed[nr][nc]) {
+                            revealCell(nr, nc);
+                        }
+                    }
+                }
+            }
         }
 
         function revealCell(r, c) {
@@ -467,9 +444,18 @@
 
         function gameOver(win, clickedRow, clickedCol) {
             isGameOver = true; clearInterval(timerInterval);
+            document.getElementById('restart-btn').classList.add('visible'); // Mostrar botón reiniciar
             
+            // Revelar minas
             for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) { if (grid[r][c] === 'M') revealed[r][c] = true; }
+                for (let c = 0; c < cols; c++) { 
+                    if (grid[r][c] === 'M' && !flags[r][c]) revealed[r][c] = true; 
+                    // Mostrar minas equivocadas
+                    if (grid[r][c] !== 'M' && flags[r][c]) {
+                        revealed[r][c] = true;
+                        grid[r][c] = 'X'; // Marca de error visual
+                    }
+                }
             }
             
             updateBoardVisuals();
@@ -488,7 +474,6 @@
                     el.classList.add('exploded');
                 }
                 if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                setTimeout(() => alert("Mina detonada. Inténtalo de nuevo."), 500);
             }
         }
 
