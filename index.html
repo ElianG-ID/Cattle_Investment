@@ -28,28 +28,28 @@
         }
         /* Transiciones de pantalla suave */
         .page-view {
-            transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+            transition: opacity 0.2s ease-in-out;
         }
         .page-hidden {
-            display: none;
+            display: none !important;
             opacity: 0;
-            transform: translateY(10px);
         }
         /* Color pickers circulares para selección móvil */
         .color-dot {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
             transition: transform 0.2s, border 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .color-dot:active, .color-dot.active {
             transform: scale(1.15);
-            border: 2px solid #ffffff;
+            border: 2px solid #38bdf8;
         }
     </style>
 </head>
-<body class="min-h-screen pb-20">
+<body class="min-h-screen pb-12">
 
     <!-- CABECERA PRINCIPAL -->
     <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3">
@@ -78,7 +78,7 @@
     <!-- VISTA 1: DASHBOARD / MENÚ PRINCIPAL -->
     <main id="viewDashboard" class="page-view max-w-md mx-auto p-4 flex flex-col gap-4">
         
-        <!-- RESUMEN FINANCIERO GLOBAL (QoL) -->
+        <!-- RESUMEN FINANCIERO GLOBAL -->
         <div class="glass-card rounded-2xl p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/90 shadow-xl">
             <div class="flex justify-between items-center mb-3">
                 <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">Métricas Globales</span>
@@ -96,10 +96,10 @@
                     <span id="globalProfit" class="text-base font-bold text-emerald-400">$0.00</span>
                 </div>
             </div>
-            <!-- Búsqueda y Filtros QoL -->
+            <!-- Búsqueda -->
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
-                <input type="text" id="searchInput" oninput="renderCattleGrid()" placeholder="Buscar por arete, lote o notas..." 
+                <input type="text" id="searchInput" oninput="renderCattleGrid()" placeholder="Buscar por arete o raza..." 
                        class="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500">
             </div>
         </div>
@@ -109,91 +109,107 @@
             <!-- Renderizado dinámico -->
         </div>
 
-        <!-- BOTÓN FLOTANTE O DE ACCIÓN PARA NUEVA RES -->
+        <!-- BOTÓN REGISTRAR -->
         <button onclick="openModalNewCattle()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-2xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 active:scale-[0.98] transition">
             <i data-lucide="plus-circle" class="w-5 h-5"></i> Registrar Nueva Res
         </button>
     </main>
 
-    <!-- VISTA 2: DETALLE / EDICIÓN DE RES -->
-    <main id="viewDetail" class="page-view page-hidden max-w-md mx-auto p-4 flex flex-col gap-4">
+    <!-- VISTA 2: DETALLE / EDICIÓN DE RES (Corrección de espacio superior ajustando padding y márgenes) -->
+    <main id="viewDetail" class="page-view page-hidden max-w-md mx-auto px-4 py-2 flex flex-col gap-3">
         
-        <div class="flex items-center justify-between gap-2 mb-1">
+        <div class="flex items-center justify-between gap-2">
             <button onclick="showDashboard()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 text-xs font-semibold flex items-center gap-1 transition">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al Menú
             </button>
             <button onclick="deleteCurrentCattle()" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-xl text-xs font-semibold transition">
-                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                <i data-lucide="trash-2" class="w-4 h-4"></i> Eliminar
             </button>
         </div>
 
-        <!-- PERFIL MINIMALISTA DE LA RES CON COLOR EDITABLE -->
-        <div class="glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-3 relative overflow-hidden">
-            <div id="avatarContainer" class="w-32 h-32 flex items-center justify-center transition-transform duration-300">
-                <!-- SVG Dinámico inyectado por JS -->
+        <!-- PERFIL MINIMALISTA DE LA RES CON PERSONALIZACIÓN AVANZADA -->
+        <div class="glass-card rounded-2xl p-3 flex flex-col items-center justify-center gap-2 relative overflow-hidden">
+            <div id="avatarContainer" class="w-28 h-28 flex items-center justify-center transition-transform duration-300">
+                <!-- SVG Dinámico -->
             </div>
             
             <div class="text-center">
-                <h2 id="detailTagId" class="text-xl font-bold text-slate-100">Arete #000</h2>
-                <p id="detailBreed" class="text-xs text-slate-400">Raza / Descripción</p>
+                <h2 id="detailTagId" class="text-lg font-bold text-slate-100 leading-tight">Arete #000</h2>
+                <p id="detailBreed" class="text-[11px] text-slate-400">Raza / Descripción</p>
             </div>
 
-            <!-- Selector de Color para Identificación Visual -->
-            <div class="w-full pt-3 border-t border-slate-800">
-                <span class="text-[11px] font-semibold text-slate-400 block text-center mb-2">Color de Identificación Visual</span>
-                <div class="flex justify-center items-center gap-3" id="colorPickerContainer">
-                    <!-- Colores generados dinámicamente -->
+            <!-- SELECTORES DE PERSONALIZACIÓN DEL AVATAR -->
+            <div class="w-full pt-2 border-t border-slate-800/80 space-y-2">
+                <!-- Color Base -->
+                <div>
+                    <span class="text-[10px] font-semibold text-slate-400 block text-center mb-1">Color Base de la Piel</span>
+                    <div class="flex justify-center items-center gap-2" id="baseColorPicker"></div>
+                </div>
+                <!-- Color y Patrón de Manchas -->
+                <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/40">
+                    <div>
+                        <span class="text-[10px] font-semibold text-slate-400 block text-center mb-1">Patrón Manchas</span>
+                        <select id="spotPatternSelect" onchange="updateCustomization('spotPattern', this.value)" class="w-full bg-slate-950/60 border border-slate-800 rounded-lg p-1 text-[11px] text-slate-200">
+                            <option value="none">Sin manchas</option>
+                            <option value="eye">Ojo y Nariz</option>
+                            <option value="patch">Múltiples Manchas</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-semibold text-slate-400 block text-center mb-1">Color Mancha</span>
+                        <div class="flex justify-center items-center gap-1.5" id="spotColorPicker"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- FORMULARIO DE COSTOS Y PROYECCIÓN FINANCIERA -->
-        <div class="glass-card rounded-2xl p-4 space-y-4">
-            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2 border-b border-slate-800 pb-2">
+        <div class="glass-card rounded-2xl p-3.5 space-y-3">
+            <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2 border-b border-slate-800 pb-2">
                 <i data-lucide="calculator" class="w-4 h-4 text-emerald-400"></i> Parámetros e Inversión Básica
             </h3>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2.5">
                 <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">Arete / Identificador</label>
-                    <input type="text" id="inputTag" onchange="updateCurrentCattleField('tag', this.value)" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                    <label class="text-[10px] text-slate-400 block mb-1">Arete / ID</label>
+                    <input type="text" id="inputTag" onchange="updateCurrentCattleField('tag', this.value)" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
                 </div>
                 <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">Raza / Tipo</label>
-                    <input type="text" id="inputBreed" onchange="updateCurrentCattleField('breed', this.value)" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">Costo Adquisición ($)</label>
-                    <input type="number" id="inputPurchasePrice" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">Peso Compra (kg)</label>
-                    <input type="number" id="inputWeightInitial" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                    <label class="text-[10px] text-slate-400 block mb-1">Raza / Tipo</label>
+                    <input type="text" id="inputBreed" onchange="updateCurrentCattleField('breed', this.value)" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2.5">
                 <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">Gasto Alimento ($)</label>
-                    <input type="number" id="inputFeedCost" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                    <label class="text-[10px] text-slate-400 block mb-1">Costo Adquisición ($)</label>
+                    <input type="number" id="inputPurchasePrice" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
                 </div>
                 <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">Veterinario/Base ($)</label>
-                    <input type="number" id="inputVetCost" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                    <label class="text-[10px] text-slate-400 block mb-1">Peso Compra (kg)</label>
+                    <input type="number" id="inputWeightInitial" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5">
+                <div>
+                    <label class="text-[10px] text-slate-400 block mb-1">Gasto Alimento ($)</label>
+                    <input type="number" id="inputFeedCost" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="text-[10px] text-slate-400 block mb-1">Veterinario Base ($)</label>
+                    <input type="number" id="inputVetCost" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
                 </div>
             </div>
         </div>
 
         <!-- CAMPOS DINÁMICOS ADICIONALES (MEDICAMENTOS, FLETES, ETC.) -->
-        <div class="glass-card rounded-2xl p-4 space-y-3">
+        <div class="glass-card rounded-2xl p-3.5 space-y-3">
             <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-                    <i data-lucide="syringe" class="w-4 h-4 text-emerald-400"></i> Costos Adicionales / Medicamentos
+                <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2">
+                    <i data-lucide="syringe" class="w-4 h-4 text-emerald-400"></i> Costos Extra / Medicamentos
                 </h3>
-                <button onclick="addExtraCostRow()" class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                <button onclick="addExtraCostRow()" class="px-2 py-1 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
                     <i data-lucide="plus" class="w-3.5 h-3.5"></i> Agregar
                 </button>
             </div>
@@ -204,19 +220,19 @@
         </div>
 
         <!-- PROYECCIÓN DE SALIDA Y VENTA -->
-        <div class="glass-card rounded-2xl p-4 space-y-3">
-            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2 border-b border-slate-800 pb-2">
+        <div class="glass-card rounded-2xl p-3.5 space-y-3">
+            <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2 border-b border-slate-800 pb-2">
                 <i data-lucide="trending-up" class="w-4 h-4 text-emerald-400"></i> Proyección de Venta y Ganancia
             </h3>
 
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2.5">
                 <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">Peso Est. Venta (kg)</label>
-                    <input type="number" id="inputTargetWeight" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                    <label class="text-[10px] text-slate-400 block mb-1">Peso Est. Venta (kg)</label>
+                    <input type="number" id="inputTargetWeight" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
                 </div>
                 <div>
-                    <label class="text-[11px] text-slate-400 block mb-1">Precio x kg Venta ($)</label>
-                    <input type="number" id="inputPricePerKg" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                    <label class="text-[10px] text-slate-400 block mb-1">Precio x kg Venta ($)</label>
+                    <input type="number" id="inputPricePerKg" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
                 </div>
             </div>
 
@@ -230,7 +246,7 @@
                     <span>Venta Estimada Total:</span>
                     <span id="summaryEstimatedSale" class="font-semibold text-slate-200">$0.00</span>
                 </div>
-                <div class="flex justify-between text-sm font-bold border-t border-slate-800 pt-2">
+                <div class="flex justify-between text-xs font-bold border-t border-slate-800 pt-2">
                     <span class="text-slate-300">Ganancia Neta Estimada:</span>
                     <span id="summaryNetProfit" class="text-emerald-400">$0.00</span>
                 </div>
@@ -239,16 +255,23 @@
     </main>
 
     <script>
-        // --- COLORES PREDEFINIDOS PARA PERFIL DE RES ---
-        const PALETTE = [
-            { name: 'Negro / Angus', hex: '#334155' },
-            { name: 'Café / Hereford', hex: '#b45309' },
-            { name: 'Blanco / Brahman', hex: '#e2e8f0' },
-            { name: 'Canela / Jersey', hex: '#d97706' },
-            { name: 'Gris / Nelore', hex: '#64748b' }
+        // --- OPCIONES DE PERSONALIZACIÓN PARA EL AVATAR ---
+        const BASE_PALETTE = [
+            { name: 'Negro', hex: '#334155' },
+            { name: 'Café', hex: '#b45309' },
+            { name: 'Blanco', hex: '#f1f5f9' },
+            { name: 'Canela', hex: '#d97706' },
+            { name: 'Gris', hex: '#64748b' }
         ];
 
-        // --- ESTADO GLOBAL Y PERSISTENCIA (localStorage) ---
+        const SPOT_PALETTE = [
+            { name: 'Blanco', hex: '#ffffff' },
+            { name: 'Negro', hex: '#0f172a' },
+            { name: 'Café', hex: '#78350f' },
+            { name: 'Crema', hex: '#fef3c7' }
+        ];
+
+        // --- ESTADO GLOBAL ---
         let appState = {
             cattles: JSON.parse(localStorage.getItem('gana_track_data')) || []
         };
@@ -257,12 +280,13 @@
         // --- INICIALIZACIÓN ---
         window.onload = () => {
             if (appState.cattles.length === 0) {
-                // Registro inicial de prueba si está vacío
                 appState.cattles.push({
                     id: Date.now().toString(),
                     tag: "A-101",
                     breed: "Brahman",
                     color: "#b45309",
+                    spotColor: "#ffffff",
+                    spotPattern: "patch",
                     purchasePrice: 12000,
                     weightInitial: 180,
                     feedCost: 3500,
@@ -285,20 +309,41 @@
             updateGlobalMetrics();
         }
 
-        // --- DIBUJO DE SVG MINIMALISTA PARA EL PERFIL DE RES ---
-        function getCattleSVG(colorHex) {
+        // --- SVG MINIMALISTA CON PERSONALIZACIÓN DE MANCHAS Y COLORES ---
+        function getCattleSVG(c) {
+            const baseColor = c.color || '#b45309';
+            const spotColor = c.spotColor || '#ffffff';
+            const pattern = c.spotPattern || 'none';
+
+            let spotsHTML = '';
+            if (pattern === 'eye') {
+                spotsHTML = `
+                    <!-- Mancha en ojo derecho y parte de nariz -->
+                    <path d="M 52 24 C 68 22, 74 38, 65 48 C 58 52, 50 40, 52 24 Z" fill="${spotColor}" opacity="0.9"/>
+                `;
+            } else if (pattern === 'patch') {
+                spotsHTML = `
+                    <!-- Manchas Múltiples -->
+                    <circle cx="34" cy="32" r="8" fill="${spotColor}" opacity="0.9"/>
+                    <path d="M 55 22 C 68 20, 72 35, 62 42 C 55 45, 50 35, 55 22 Z" fill="${spotColor}" opacity="0.9"/>
+                    <circle cx="48" cy="18" r="5" fill="${spotColor}" opacity="0.9"/>
+                `;
+            }
+
             return `
             <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-md">
                 <!-- Orejas -->
-                <path d="M 20 35 C 10 25, 10 40, 25 40 Z" fill="${colorHex}" stroke="#0f172a" stroke-width="2"/>
-                <path d="M 80 35 C 90 25, 90 40, 75 40 Z" fill="${colorHex}" stroke="#0f172a" stroke-width="2"/>
-                <!-- Cuernos Minimalistas -->
-                <path d="M 30 28 C 25 15, 20 18, 26 26 Z" fill="#cbd5e1" />
-                <path d="M 70 28 C 75 15, 80 18, 74 26 Z" fill="#cbd5e1" />
+                <path d="M 20 35 C 10 25, 10 40, 25 40 Z" fill="${baseColor}" stroke="#0f172a" stroke-width="2"/>
+                <path d="M 80 35 C 90 25, 90 40, 75 40 Z" fill="${baseColor}" stroke="#0f172a" stroke-width="2"/>
+                <!-- Cuernos -->
+                <path d="M 30 28 C 25 15, 20 18, 26 26 Z" fill="#cbd5e1" stroke="#475569" stroke-width="1"/>
+                <path d="M 70 28 C 75 15, 80 18, 74 26 Z" fill="#cbd5e1" stroke="#475569" stroke-width="1"/>
                 <!-- Cabeza -->
-                <ellipse cx="50" cy="42" rx="26" ry="24" fill="${colorHex}" stroke="#0f172a" stroke-width="2"/>
+                <ellipse cx="50" cy="42" rx="26" ry="24" fill="${baseColor}" stroke="#0f172a" stroke-width="2"/>
+                <!-- Capa de Manchas -->
+                ${spotsHTML}
                 <!-- Hocico -->
-                <ellipse cx="50" cy="58" rx="18" ry="14" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+                <ellipse cx="50" cy="58" rx="18" ry="14" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
                 <!-- Narinas -->
                 <circle cx="43" cy="58" r="2.5" fill="#334155"/>
                 <circle cx="57" cy="58" r="2.5" fill="#334155"/>
@@ -310,22 +355,22 @@
             </svg>`;
         }
 
-        // --- DASHBOARD / GRID DE TARJETAS ---
+        // --- DASHBOARD DE TARJETAS CON BOTÓN DE ELIMINACIÓN DIRECTA ---
         function renderCattleGrid() {
             const grid = document.getElementById('cattleGrid');
             grid.innerHTML = '';
 
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = appState.cattles.filter(c => 
-                c.tag.toLowerCase().includes(query) || 
-                c.breed.toLowerCase().includes(query)
+                (c.tag && c.tag.toLowerCase().includes(query)) || 
+                (c.breed && c.breed.toLowerCase().includes(query))
             );
 
             if (filtered.length === 0) {
                 grid.innerHTML = `
                     <div class="text-center py-8 text-slate-500 glass-card rounded-2xl">
                         <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
-                        <p class="text-xs">No hay reses registradas o que coincidan con la búsqueda.</p>
+                        <p class="text-xs">No hay reses registradas o que coincidan.</p>
                     </div>`;
                 updateGlobalMetrics();
                 lucide.createIcons();
@@ -336,29 +381,36 @@
                 const metrics = calculateCattleFinancials(cattle);
                 
                 const card = document.createElement('div');
-                card.className = 'glass-card rounded-2xl p-3.5 flex items-center justify-between cursor-pointer hover:border-slate-700 active:scale-[0.99] transition';
-                card.onclick = () => openCattleDetail(cattle.id);
+                card.className = 'glass-card rounded-2xl p-3 flex items-center justify-between hover:border-slate-700 transition relative';
 
                 card.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 rounded-xl bg-slate-950/50 border border-slate-800 p-1 flex-shrink-0">
-                            ${getCattleSVG(cattle.color || '#b45309')}
+                    <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="openCattleDetail('${cattle.id}')">
+                        <div class="w-12 h-12 rounded-xl bg-slate-950/50 border border-slate-800 p-1 flex-shrink-0">
+                            ${getCattleSVG(cattle)}
                         </div>
                         <div>
                             <div class="flex items-center gap-2">
-                                <h3 class="font-bold text-sm text-slate-100">${cattle.tag || 'Sin Arete'}</h3>
-                                <span class="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-400 rounded-md border border-slate-700">${cattle.breed || 'Criollo'}</span>
+                                <h3 class="font-bold text-xs text-slate-100">${cattle.tag || 'Sin Arete'}</h3>
+                                <span class="text-[9px] px-1.5 py-0.5 bg-slate-800 text-slate-400 rounded border border-slate-700">${cattle.breed || 'Criollo'}</span>
                             </div>
-                            <div class="text-[11px] text-slate-400 mt-0.5">
+                            <div class="text-[10px] text-slate-400 mt-0.5">
                                 Inv: <span class="text-slate-200 font-medium">$${metrics.totalCost.toFixed(2)}</span>
                             </div>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <span class="text-[10px] text-slate-400 block uppercase">Est. Ganancia</span>
-                        <span class="text-xs font-bold ${metrics.netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
-                            $${metrics.netProfit.toFixed(2)}
-                        </span>
+                    <div class="flex items-center gap-3">
+                        <div class="text-right cursor-pointer" onclick="openCattleDetail('${cattle.id}')">
+                            <span class="text-[9px] text-slate-400 block uppercase">Est. Ganancia</span>
+                            <span class="text-xs font-bold ${metrics.netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
+                                $${metrics.netProfit.toFixed(2)}
+                            </span>
+                        </div>
+                        <!-- Botón de eliminación directa de la tarjeta -->
+                        <button onclick="confirmDeleteFromGrid(event, '${cattle.id}', '${cattle.tag || ''}')" 
+                                title="Eliminar res" 
+                                class="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -366,6 +418,15 @@
 
             updateGlobalMetrics();
             lucide.createIcons();
+        }
+
+        function confirmDeleteFromGrid(event, id, tag) {
+            event.stopPropagation(); // Evita abrir la pantalla de detalle
+            if (confirm(`¿Eliminar definitivamente la res con arete "${tag || 'Sin ID'}"?`)) {
+                appState.cattles = appState.cattles.filter(c => c.id !== id);
+                saveData();
+                renderCattleGrid();
+            }
         }
 
         // --- CÁLCULOS FINANCIEROS INDIVIDUALES ---
@@ -415,23 +476,33 @@
             // Render SVG y Datos
             document.getElementById('detailTagId').innerText = cattle.tag ? `Arete ${cattle.tag}` : 'Sin Arete';
             document.getElementById('detailBreed').innerText = cattle.breed || 'Sin Raza Registrada';
-            document.getElementById('avatarContainer').innerHTML = getCattleSVG(cattle.color || '#b45309');
+            document.getElementById('avatarContainer').innerHTML = getCattleSVG(cattle);
 
-            // Render Selector Colores
-            const colorContainer = document.getElementById('colorPickerContainer');
-            colorContainer.innerHTML = '';
-            PALETTE.forEach(p => {
+            // Render Selector Color Base
+            const baseContainer = document.getElementById('baseColorPicker');
+            baseContainer.innerHTML = '';
+            BASE_PALETTE.forEach(p => {
                 const dot = document.createElement('div');
                 dot.className = `color-dot ${cattle.color === p.hex ? 'active' : ''}`;
                 dot.style.backgroundColor = p.hex;
                 dot.title = p.name;
-                dot.onclick = () => {
-                    cattle.color = p.hex;
-                    saveData();
-                    openCattleDetail(id); // Recargar panel de color y avatar
-                };
-                colorContainer.appendChild(dot);
+                dot.onclick = () => updateCustomization('color', p.hex);
+                baseContainer.appendChild(dot);
             });
+
+            // Render Selector Color Mancha
+            const spotContainer = document.getElementById('spotColorPicker');
+            spotContainer.innerHTML = '';
+            SPOT_PALETTE.forEach(p => {
+                const dot = document.createElement('div');
+                dot.className = `color-dot ${cattle.spotColor === p.hex ? 'active' : ''}`;
+                dot.style.backgroundColor = p.hex;
+                dot.title = p.name;
+                dot.onclick = () => updateCustomization('spotColor', p.hex);
+                spotContainer.appendChild(dot);
+            });
+
+            document.getElementById('spotPatternSelect').value = cattle.spotPattern || 'none';
 
             // Inputs Formulario
             document.getElementById('inputTag').value = cattle.tag || '';
@@ -446,10 +517,19 @@
             renderExtraCostsList(cattle);
             updateCurrentCattleCalculations();
 
-            // Cambiar Pantallas
+            // Cambiar Pantallas de forma limpia
             document.getElementById('viewDashboard').classList.add('page-hidden');
             document.getElementById('viewDetail').classList.remove('page-hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        function updateCustomization(key, value) {
+            const cattle = appState.cattles.find(c => c.id === activeCattleId);
+            if (cattle) {
+                cattle[key] = value;
+                saveData();
+                openCattleDetail(activeCattleId);
+            }
         }
 
         function showDashboard() {
@@ -498,20 +578,20 @@
             container.innerHTML = '';
 
             if (!cattle.extraCosts || cattle.extraCosts.length === 0) {
-                container.innerHTML = `<p class="text-[11px] text-slate-500 italic text-center py-2">Sin gastos adicionales agregados.</p>`;
+                container.innerHTML = `<p class="text-[10px] text-slate-500 italic text-center py-1">Sin gastos adicionales agregados.</p>`;
                 return;
             }
 
-            cattle.extraCosts.forEach((extra, idx) => {
+            cattle.extraCosts.forEach((extra) => {
                 const row = document.createElement('div');
                 row.className = 'flex items-center gap-2';
                 row.innerHTML = `
-                    <input type="text" value="${extra.concept}" placeholder="Concepto (ej. Vacuna)" 
+                    <input type="text" value="${extra.concept}" placeholder="Concepto" 
                            onchange="updateExtraCostItem('${extra.id}', 'concept', this.value)"
                            class="flex-1 bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
                     <input type="number" value="${extra.cost}" placeholder="$" 
                            oninput="updateExtraCostItem('${extra.id}', 'cost', this.value)"
-                           class="w-24 bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                           class="w-20 bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
                     <button onclick="removeExtraCostRow('${extra.id}')" class="p-2 text-slate-500 hover:text-rose-400">
                         <i data-lucide="x" class="w-4 h-4"></i>
                     </button>
@@ -554,14 +634,16 @@
             }
         }
 
-        // --- CREACIÓN / ELIMINACIÓN DE RES ---
+        // --- NUEVA RES Y ELIMINACIÓN ---
         function openModalNewCattle() {
             const nextNumber = appState.cattles.length + 1;
             const newCattle = {
                 id: Date.now().toString(),
                 tag: `B-${100 + nextNumber}`,
                 breed: "Criollo",
-                color: PALETTE[Math.floor(Math.random() * PALETTE.length)].hex,
+                color: BASE_PALETTE[Math.floor(Math.random() * BASE_PALETTE.length)].hex,
+                spotColor: "#ffffff",
+                spotPattern: "none",
                 purchasePrice: 0,
                 weightInitial: 0,
                 feedCost: 0,
@@ -604,12 +686,12 @@
                         appState.cattles = loadedState;
                         saveData();
                         renderCattleGrid();
-                        alert("¡Base de datos de reses importada con éxito!");
+                        alert("¡Base de datos importada correctamente!");
                     } else {
-                        alert("El archivo no tiene un formato válido.");
+                        alert("Formato de archivo no válido.");
                     }
                 } catch (err) {
-                    alert("Error al leer el archivo JSON.");
+                    alert("Error al procesar el archivo JSON.");
                 }
             };
             fileReader.readAsText(event.target.files[0]);
