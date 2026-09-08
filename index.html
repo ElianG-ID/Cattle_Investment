@@ -3,528 +3,616 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Minesweeper Minimal</title>
-    
-    <link id="favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='32' fill='%23FF6B6B'/><circle cx='40' cy='38' r='6' fill='%23FFFFFF'/><path d='M50 12 L50 2 M77 23 L84 16 M88 50 L98 50 M77 77 L84 84 M50 88 L50 98 M23 77 L16 84 M12 50 L2 50 M23 23 L16 16' stroke='%23FF6B6B' stroke-width='8' stroke-linecap='round'/></svg>">
-
+    <title>GanaTrack - Inversión Bovina</title>
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* =========================================
-           TEMAS LIGHT (DÍA)
-           ========================================= */
-        [data-theme="alba"] { --bg-grad1: #F0EEE9; --bg-grad2: #E3DFD6; --surface: rgba(255, 255, 255, 0.7); --cell-hidden: #E3DFD6; --cell-revealed: #F9F8F6; --text-main: #333333; --text-muted: #888888; --accent: #FF6B6B; --primary: #4ECDC4; --success: #A8E6CF; --c1: #4ECDC4; --c2: #65C59F; --c3: #FFB37C; --c4: #FFAAA5; --c5: #FF8B94; --c6: #C5A3FF; --c7: #9D9D9D; --c8: #333333; }
-        [data-theme="tarde"] { --bg-grad1: #F4ECE1; --bg-grad2: #EAD8C3; --surface: rgba(250, 250, 250, 0.7); --cell-hidden: #E3D5C5; --cell-revealed: #FDFBF8; --text-main: #4A4A4A; --text-muted: #9B9B9B; --accent: #F26457; --primary: #5289B5; --success: #88C5A8; --c1: #5289B5; --c2: #6E9B78; --c3: #E08A56; --c4: #D36C70; --c5: #C45564; --c6: #9B7EB2; --c7: #858585; --c8: #2C2C2C; }
-        [data-theme="sakura"] { --bg-grad1: #FDF6F5; --bg-grad2: #F4E1E1; --surface: rgba(255, 255, 255, 0.7); --cell-hidden: #F4E1E1; --cell-revealed: #FCF1F1; --text-main: #5D5D5D; --text-muted: #BDBDBD; --accent: #FF9A9E; --primary: #A1C4FD; --success: #C2E9FB; --c1: #A1C4FD; --c2: #C2E9FB; --c3: #FBC2EB; --c4: #FFB199; --c5: #FF9A9E; --c6: #D4FC79; --c7: #A9A9A9; --c8: #333333; }
-        [data-theme="brisa"] { --bg-grad1: #E0F7FA; --bg-grad2: #B2EBF2; --surface: rgba(255, 255, 255, 0.6); --cell-hidden: #B2EBF2; --cell-revealed: #F1FDFE; --text-main: #263238; --text-muted: #78909C; --accent: #FF5252; --primary: #00BCD4; --success: #4CAF50; --c1: #00BCD4; --c2: #4CAF50; --c3: #FFC107; --c4: #FF9800; --c5: #FF5252; --c6: #7E57C2; --c7: #607D8B; --c8: #212121; }
-        [data-theme="arena"] { --bg-grad1: #F5F5DC; --bg-grad2: #E8E8D0; --surface: rgba(255, 255, 255, 0.6); --cell-hidden: #DCDCAA; --cell-revealed: #FAFAD2; --text-main: #4E342E; --text-muted: #8D6E63; --accent: #D84315; --primary: #5D4037; --success: #81C784; --c1: #5D4037; --c2: #81C784; --c3: #FFB300; --c4: #F4511E; --c5: #D84315; --c6: #8E24AA; --c7: #795548; --c8: #3E2723; }
-
-        /* =========================================
-           TEMAS DARK (NOCHE)
-           ========================================= */
-        [data-theme="noche"] { --bg-grad1: #242436; --bg-grad2: #1A1A28; --surface: rgba(50, 50, 74, 0.7); --cell-hidden: #45455E; --cell-revealed: #2C2C40; --text-main: #E0E0E0; --text-muted: #8B8B9E; --accent: #FF6480; --primary: #7582D2; --success: #67E0A3; --c1: #7582D2; --c2: #67E0A3; --c3: #FFC073; --c4: #FF8BA0; --c5: #FF4A6B; --c6: #B794F6; --c7: #B8B8C7; --c8: #FFFFFF; }
-        [data-theme="abismo"] { --bg-grad1: #020205; --bg-grad2: #0B0B14; --surface: rgba(17, 34, 51, 0.7); --cell-hidden: #112233; --cell-revealed: #050A14; --text-main: #00F3FF; --text-muted: #006688; --accent: #FF007C; --primary: #00F3FF; --success: #00FFAA; --c1: #00F3FF; --c2: #00FFAA; --c3: #FFD700; --c4: #FF7700; --c5: #FF007C; --c6: #9D00FF; --c7: #555577; --c8: #FFFFFF; }
-        [data-theme="ocaso"] { --bg-grad1: #2B2129; --bg-grad2: #1F171D; --surface: rgba(58, 44, 56, 0.7); --cell-hidden: #523A4D; --cell-revealed: #332731; --text-main: #F4E8D3; --text-muted: #9E8596; --accent: #FF7B54; --primary: #FFB26B; --success: #FFD56B; --c1: #FFB26B; --c2: #FFD56B; --c3: #FF7B54; --c4: #E55B5B; --c5: #A24963; --c6: #735377; --c7: #A8A8B3; --c8: #FFFFFF; }
-        [data-theme="bosque"] { --bg-grad1: #1A2118; --bg-grad2: #121711; --surface: rgba(39, 48, 36, 0.7); --cell-hidden: #384234; --cell-revealed: #1F261D; --text-main: #E2E8DF; --text-muted: #84917E; --accent: #FFB703; --primary: #8CB369; --success: #A7C957; --c1: #8CB369; --c2: #A7C957; --c3: #F4A261; --c4: #E76F51; --c5: #D62828; --c6: #B56576; --c7: #6C7A89; --c8: #FDFCDC; }
-        [data-theme="ebano"] { --bg-grad1: #0F0F0F; --bg-grad2: #050505; --surface: rgba(30, 30, 30, 0.7); --cell-hidden: #2A2A2A; --cell-revealed: #161616; --text-main: #FFFFFF; --text-muted: #888888; --accent: #BB86FC; --primary: #03DAC6; --success: #CF6679; --c1: #03DAC6; --c2: #4CAF50; --c3: #FFEB3B; --c4: #FF9800; --c5: #F44336; --c6: #E040FB; --c7: #9E9E9E; --c8: #FFFFFF; }
-
-        body, html { margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; color: var(--text-main); height: 100vh; display: flex; flex-direction: column; align-items: center; overflow: hidden; user-select: none; -webkit-user-select: none; transition: color 0.8s ease; }
-
-        #bg-anim { position: fixed; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, var(--bg-grad1), var(--bg-grad2), var(--bg-grad1)); background-size: 400% 400%; z-index: -1; transition: background 1s ease; animation: liquidGradient 20s ease infinite alternate; }
-        @keyframes liquidGradient { 0% { background-position: 0% 50%; transform: rotate(0deg); } 50% { background-position: 100% 50%; transform: rotate(2deg); } 100% { background-position: 0% 50%; transform: rotate(-2deg); } }
-
-        .glass-panel { background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 30px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; align-items: center; transition: background 0.4s; }
-
-        /* TOGGLE MINIMALISTA (SVG) */
-        .top-bar { width: 100%; display: flex; justify-content: flex-end; padding: 20px; box-sizing: border-box; position: absolute; top: 0; z-index: 10;}
-        .mode-toggle { background: var(--surface); border: 1px solid var(--cell-hidden); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; color: var(--text-main); backdrop-filter: blur(10px); }
-        .mode-toggle svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .mode-toggle:active { transform: scale(0.9); }
-
-        #start-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; transition: opacity 0.4s ease; z-index: 2; }
-        h1 { font-size: 32px; font-weight: 900; letter-spacing: -1px; margin: 0 0 5px 0; }
-        .theme-name { font-size: 12px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; }
-        
-        .mode-selector { margin-bottom: 25px; display: flex; gap: 10px; background: rgba(0,0,0,0.05); padding: 5px; border-radius: 20px;}
-        .mode-btn { background: transparent; border: none; padding: 8px 16px; border-radius: 15px; color: var(--text-main); font-weight: bold; cursor: pointer; font-size: 14px; transition: background 0.3s;}
-        .mode-btn.active { background: var(--surface); box-shadow: 0 2px 10px rgba(0,0,0,0.1); color: var(--primary); }
-
-        .slider-container { width: 100%; max-width: 250px; text-align: center; margin-bottom: 30px; }
-        .difficulty-label { font-size: 20px; font-weight: 900; margin-bottom: 5px; display: block; color: var(--primary); letter-spacing: 2px; transition: color 0.4s;}
-        .best-time-label { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 20px; display: block; height: 20px; }
-        
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin-bottom: 15px;}
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--primary); cursor: pointer; margin-top: -10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); transition: transform 0.2s, background 0.4s; }
-        input[type=range]::-webkit-slider-thumb:active { transform: scale(1.2); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: var(--cell-hidden); border-radius: 2px; transition: background 0.4s;}
-
-        .btn { background: var(--primary); color: #FFF; border: none; padding: 16px 40px; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); transition: all 0.3s ease; letter-spacing: 1px; }
-        .btn:active { transform: translateY(2px); }
-
-        #game-screen { display: none; flex-direction: column; width: 100%; height: 100%; max-width: 1000px; padding: 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.4s ease; z-index: 2; position: relative;}
-        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; transition: background 0.4s; border: 1px solid rgba(255,255,255,0.1); }
-        .stat { font-size: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; transition: color 0.3s;}
-        .stat.success { color: var(--success); }
-        .stat.danger { color: var(--accent); } /* QoL: Color rojo si hay banderas negativas */
-        
-        .toggle-btn { background: var(--cell-hidden); border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; gap: 8px; color: var(--text-main); }
-        .toggle-btn.flag-mode { background: var(--accent); color: #FFF; }
-
-        .board-wrapper { flex-grow: 1; overflow: auto; display: flex; justify-content: center; align-items: center; border-radius: 20px; -webkit-overflow-scrolling: touch; padding: 10px; position: relative;}
-        #board { display: grid; gap: 2px; padding: 10px; background: var(--surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(255,255,255,0.1); transition: background 0.4s; }
-
-        .cell { width: 32px; height: 32px; background: var(--cell-hidden); border-radius: 6px; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 16px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
-        .cell:active { transform: scale(0.85); filter: brightness(0.9); }
-        .cell.revealed { background: var(--cell-revealed); cursor: default; transform: none; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);}
-        
-        .mine-svg { width: 65%; height: 65%; color: var(--text-muted); transition: color 0.3s; }
-        .cell.flag::after { content: '▲'; color: var(--accent); font-size: 16px; text-shadow: 0 2px 4px rgba(0,0,0,0.15); }
-
-        @keyframes explode { 0% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.4); background-color: var(--accent); z-index: 10; box-shadow: 0 0 20px var(--accent); } 100% { transform: scale(1); background-color: var(--accent); } }
-        
-        /* QoL: Resaltar la mina que detonaste */
-        .cell.exploded { animation: explode 0.5s ease-out forwards; position: relative; z-index: 10; background-color: var(--accent) !important; }
-        .cell.exploded .mine-svg { color: #FFF; }
-
-        /* OVERLAY DE REINTENTO (Glassmorphism) */
-        .overlay-screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 50; opacity: 0; transition: opacity 0.4s ease; border-radius: 20px;
+        :root {
+            --app-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
         }
-        .overlay-screen.active { display: flex; opacity: 1; }
-        .overlay-title { font-size: 32px; font-weight: 900; margin-bottom: 20px; text-shadow: 0 4px 10px rgba(0,0,0,0.3); text-align: center;}
-        
-        .overlay-btn { margin: 8px; width: 220px; padding: 14px; border-radius: 30px; font-weight: bold; font-size: 16px; cursor: pointer; border: none; transition: transform 0.2s;}
-        .overlay-btn.primary { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .overlay-btn.secondary { background: var(--surface); color: var(--text-main); border: 2px solid var(--text-muted); }
-        .overlay-btn:active { transform: scale(0.95); }
-
-        @media (max-width: 500px) {
-            .cell { width: 28px; height: 28px; font-size: 14px; }
-            .header { padding: 12px 15px; } .stat { font-size: 16px; }
-            .board-wrapper { align-items: flex-start; justify-content: flex-start; } 
+        body {
+            background-color: var(--app-bg);
+            color: #f8fafc;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Transiciones de pantalla suave */
+        .page-view {
+            transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
+        }
+        .page-hidden {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        /* Color pickers circulares para selección móvil */
+        .color-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s, border 0.2s;
+        }
+        .color-dot:active, .color-dot.active {
+            transform: scale(1.15);
+            border: 2px solid #ffffff;
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen pb-20">
 
-    <div id="bg-anim"></div>
+    <!-- CABECERA PRINCIPAL -->
+    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl">
+                    <i data-lucide="beef" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base leading-tight">GanaTrack</h1>
+                    <p class="text-[10px] text-slate-400">Control Financiero de Reses</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="exportData()" title="Exportar Copia de Seguridad" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                </button>
+                <label title="Cargar Copia" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 cursor-pointer transition">
+                    <i data-lucide="upload" class="w-4 h-4"></i>
+                    <input type="file" id="importFile" class="hidden" onchange="importData(event)">
+                </label>
+            </div>
+        </div>
+    </header>
 
-    <!-- Toggle Minimalista SVG Lineal -->
-    <div class="top-bar">
-        <button class="mode-toggle" id="mode-toggle-btn" onclick="toggleLightDarkMode()">
-            <!-- Sol Minimalista (Líneas) -->
-            <svg id="icon-sun" viewBox="0 0 24 24" style="display:none;">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-            <!-- Luna Minimalista -->
-            <svg id="icon-moon" viewBox="0 0 24 24">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
+    <!-- VISTA 1: DASHBOARD / MENÚ PRINCIPAL -->
+    <main id="viewDashboard" class="page-view max-w-md mx-auto p-4 flex flex-col gap-4">
+        
+        <!-- RESUMEN FINANCIERO GLOBAL (QoL) -->
+        <div class="glass-card rounded-2xl p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/90 shadow-xl">
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">Métricas Globales</span>
+                <span id="totalCattleBadge" class="text-xs font-bold bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                    0 Cabeza(s)
+                </span>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800">
+                    <span class="text-[11px] text-slate-400 block">Inversión Total</span>
+                    <span id="globalInvestment" class="text-base font-bold text-slate-100">$0.00</span>
+                </div>
+                <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800">
+                    <span class="text-[11px] text-slate-400 block">Ganancia Est. Total</span>
+                    <span id="globalProfit" class="text-base font-bold text-emerald-400">$0.00</span>
+                </div>
+            </div>
+            <!-- Búsqueda y Filtros QoL -->
+            <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+                <input type="text" id="searchInput" oninput="renderCattleGrid()" placeholder="Buscar por arete, lote o notas..." 
+                       class="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500">
+            </div>
+        </div>
+
+        <!-- TARJETAS DE RESES -->
+        <div id="cattleGrid" class="grid grid-cols-1 gap-3">
+            <!-- Renderizado dinámico -->
+        </div>
+
+        <!-- BOTÓN FLOTANTE O DE ACCIÓN PARA NUEVA RES -->
+        <button onclick="openModalNewCattle()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-2xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 active:scale-[0.98] transition">
+            <i data-lucide="plus-circle" class="w-5 h-5"></i> Registrar Nueva Res
         </button>
-    </div>
+    </main>
 
-    <div id="start-screen">
-        <div class="glass-panel">
-            <h1>MINESWEEPER</h1>
-            <span class="theme-name" id="theme-display">Tema: Alba Clásica</span>
+    <!-- VISTA 2: DETALLE / EDICIÓN DE RES -->
+    <main id="viewDetail" class="page-view page-hidden max-w-md mx-auto p-4 flex flex-col gap-4">
+        
+        <div class="flex items-center justify-between gap-2 mb-1">
+            <button onclick="showDashboard()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 text-xs font-semibold flex items-center gap-1 transition">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al Menú
+            </button>
+            <button onclick="deleteCurrentCattle()" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-xl text-xs font-semibold transition">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- PERFIL MINIMALISTA DE LA RES CON COLOR EDITABLE -->
+        <div class="glass-card rounded-2xl p-4 flex flex-col items-center justify-center gap-3 relative overflow-hidden">
+            <div id="avatarContainer" class="w-32 h-32 flex items-center justify-center transition-transform duration-300">
+                <!-- SVG Dinámico inyectado por JS -->
+            </div>
             
-            <div class="mode-selector">
-                <button class="mode-btn active" id="btn-standard" onclick="setGameMode('standard')">Standard Mode</button>
-                <button class="mode-btn" id="btn-noguess" onclick="setGameMode('noguess')">No Guessing</button>
+            <div class="text-center">
+                <h2 id="detailTagId" class="text-xl font-bold text-slate-100">Arete #000</h2>
+                <p id="detailBreed" class="text-xs text-slate-400">Raza / Descripción</p>
             </div>
 
-            <div class="slider-container">
-                <span class="difficulty-label" id="diff-label">BEGINNER</span>
-                <span class="best-time-label" id="best-time-label">Mejor tiempo: --</span>
-                <input type="range" id="diff-slider" min="0" max="3" value="0" step="1">
+            <!-- Selector de Color para Identificación Visual -->
+            <div class="w-full pt-3 border-t border-slate-800">
+                <span class="text-[11px] font-semibold text-slate-400 block text-center mb-2">Color de Identificación Visual</span>
+                <div class="flex justify-center items-center gap-3" id="colorPickerContainer">
+                    <!-- Colores generados dinámicamente -->
+                </div>
             </div>
-            <button class="btn" onclick="startGame()">Iniciar Partida</button>
         </div>
-    </div>
 
-    <div id="game-screen">
-        <div class="header">
-            <div class="stat">⏱ <span id="timer">000</span></div>
-            <button id="mode-toggle" class="toggle-btn" onclick="toggleMode()">⛏ DIG</button>
-            <div class="stat" id="flag-stat">▲ <span id="flag-count">10</span></div>
-        </div>
-        <div class="board-wrapper">
-            <div id="board"></div>
-            
-            <!-- OVERLAY REINTENTO FLOTANTE -->
-            <div id="game-overlay" class="overlay-screen">
-                <h2 id="overlay-msg" class="overlay-title">¡Mina Detonada!</h2>
-                <button class="overlay-btn primary" onclick="startGame()">REINTENTAR</button>
-                <button class="overlay-btn secondary" onclick="showStartScreen()">VOLVER AL MENÚ</button>
+        <!-- FORMULARIO DE COSTOS Y PROYECCIÓN FINANCIERA -->
+        <div class="glass-card rounded-2xl p-4 space-y-4">
+            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2 border-b border-slate-800 pb-2">
+                <i data-lucide="calculator" class="w-4 h-4 text-emerald-400"></i> Parámetros e Inversión Básica
+            </h3>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Arete / Identificador</label>
+                    <input type="text" id="inputTag" onchange="updateCurrentCattleField('tag', this.value)" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Raza / Tipo</label>
+                    <input type="text" id="inputBreed" onchange="updateCurrentCattleField('breed', this.value)" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Costo Adquisición ($)</label>
+                    <input type="number" id="inputPurchasePrice" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Peso Compra (kg)</label>
+                    <input type="number" id="inputWeightInitial" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Gasto Alimento ($)</label>
+                    <input type="number" id="inputFeedCost" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Veterinario/Base ($)</label>
+                    <input type="number" id="inputVetCost" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                </div>
             </div>
         </div>
-    </div>
+
+        <!-- CAMPOS DINÁMICOS ADICIONALES (MEDICAMENTOS, FLETES, ETC.) -->
+        <div class="glass-card rounded-2xl p-4 space-y-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                    <i data-lucide="syringe" class="w-4 h-4 text-emerald-400"></i> Costos Adicionales / Medicamentos
+                </h3>
+                <button onclick="addExtraCostRow()" class="px-2.5 py-1 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Agregar
+                </button>
+            </div>
+
+            <div id="extraCostsList" class="space-y-2">
+                <!-- Lista editable de costos adicionales -->
+            </div>
+        </div>
+
+        <!-- PROYECCIÓN DE SALIDA Y VENTA -->
+        <div class="glass-card rounded-2xl p-4 space-y-3">
+            <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2 border-b border-slate-800 pb-2">
+                <i data-lucide="trending-up" class="w-4 h-4 text-emerald-400"></i> Proyección de Venta y Ganancia
+            </h3>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Peso Est. Venta (kg)</label>
+                    <input type="number" id="inputTargetWeight" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Precio x kg Venta ($)</label>
+                    <input type="number" id="inputPricePerKg" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                </div>
+            </div>
+
+            <!-- RESUMEN FINAL POR RES -->
+            <div class="bg-slate-950/70 rounded-xl p-3 border border-slate-800 space-y-2 mt-2">
+                <div class="flex justify-between text-xs text-slate-400">
+                    <span>Costo Total Acumulado:</span>
+                    <span id="summaryTotalCost" class="font-semibold text-slate-200">$0.00</span>
+                </div>
+                <div class="flex justify-between text-xs text-slate-400">
+                    <span>Venta Estimada Total:</span>
+                    <span id="summaryEstimatedSale" class="font-semibold text-slate-200">$0.00</span>
+                </div>
+                <div class="flex justify-between text-sm font-bold border-t border-slate-800 pt-2">
+                    <span class="text-slate-300">Ganancia Neta Estimada:</span>
+                    <span id="summaryNetProfit" class="text-emerald-400">$0.00</span>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script>
-        const mineIconHTML = `<svg viewBox='0 0 100 100' class='mine-svg'><circle cx='50' cy='50' r='32' fill='currentColor'/><circle cx='40' cy='38' r='6' fill='transparent'/><path d='M50 12 L50 2 M77 23 L84 16 M88 50 L98 50 M77 77 L84 84 M50 88 L50 98 M23 77 L16 84 M12 50 L2 50 M23 23 L16 16' stroke='currentColor' stroke-width='8' stroke-linecap='round'/></svg>`;
-
-        const difficulties = [
-            { name: 'BEGINNER', rows: 9, cols: 9, mines: 10 },
-            { name: 'INTERMEDIATE', rows: 16, cols: 16, mines: 40 },
-            { name: 'EXPERT', rows: 16, cols: 30, mines: 99 },
-            { name: 'EVIL', rows: 24, cols: 30, mines: 160 }
+        // --- COLORES PREDEFINIDOS PARA PERFIL DE RES ---
+        const PALETTE = [
+            { name: 'Negro / Angus', hex: '#334155' },
+            { name: 'Café / Hereford', hex: '#b45309' },
+            { name: 'Blanco / Brahman', hex: '#e2e8f0' },
+            { name: 'Canela / Jersey', hex: '#d97706' },
+            { name: 'Gris / Nelore', hex: '#64748b' }
         ];
 
-        const lightThemes = { 'alba': 'Alba Clásica', 'tarde': 'Tarde Cálida', 'sakura': 'Sakura Minimal', 'brisa': 'Brisa Matutina', 'arena': 'Arena Suave' };
-        const darkThemes = { 'noche': 'Noche Estelar', 'abismo': 'Abismo Neón', 'ocaso': 'Ocaso Retro', 'bosque': 'Bosque Profundo', 'ebano': 'Ébano y Amatista' };
+        // --- ESTADO GLOBAL Y PERSISTENCIA (localStorage) ---
+        let appState = {
+            cattles: JSON.parse(localStorage.getItem('gana_track_data')) || []
+        };
+        let activeCattleId = null;
 
-        let isDarkMode = JSON.parse(localStorage.getItem('minimalMinesweeperDarkMode')) || false;
-        let bestTimes = JSON.parse(localStorage.getItem('minimalMinesweeperBestTimes')) || {0: null, 1: null, 2: null, 3: null};
-        
-        let currentDiff = 0, gameMode = 'standard';
-        let grid = [], revealed = [], flags = [];
-        let rows, cols, totalMines, minesLeft, timer = 0, timerInterval;
-        let isGameOver = false, firstClick = true, isFlagMode = false;
+        // --- INICIALIZACIÓN ---
+        window.onload = () => {
+            if (appState.cattles.length === 0) {
+                // Registro inicial de prueba si está vacío
+                appState.cattles.push({
+                    id: Date.now().toString(),
+                    tag: "A-101",
+                    breed: "Brahman",
+                    color: "#b45309",
+                    purchasePrice: 12000,
+                    weightInitial: 180,
+                    feedCost: 3500,
+                    vetCost: 800,
+                    targetWeight: 420,
+                    pricePerKg: 52,
+                    extraCosts: [
+                        { id: 'e1', concept: 'Desparasitante', cost: 250 },
+                        { id: 'e2', concept: 'Flete inicial', cost: 400 }
+                    ]
+                });
+                saveData();
+            }
+            renderCattleGrid();
+            lucide.createIcons();
+        };
 
-        const slider = document.getElementById('diff-slider');
-        const label = document.getElementById('diff-label');
-        const bestTimeLabel = document.getElementById('best-time-label');
-
-        function toggleLightDarkMode() {
-            isDarkMode = !isDarkMode;
-            localStorage.setItem('minimalMinesweeperDarkMode', isDarkMode);
-            applyRandomTheme();
+        function saveData() {
+            localStorage.setItem('gana_track_data', JSON.stringify(appState.cattles));
+            updateGlobalMetrics();
         }
 
-        function applyRandomTheme() {
-            document.getElementById('icon-sun').style.display = isDarkMode ? 'none' : 'block';
-            document.getElementById('icon-moon').style.display = isDarkMode ? 'block' : 'none';
-
-            const themePool = isDarkMode ? Object.keys(darkThemes) : Object.keys(lightThemes);
-            const dictionary = isDarkMode ? darkThemes : lightThemes;
-            const randomTheme = themePool[Math.floor(Math.random() * themePool.length)];
-            
-            document.body.dataset.theme = randomTheme;
-            document.getElementById('theme-display').innerText = `Tema: ${dictionary[randomTheme]}`;
-            setTimeout(() => { label.style.color = getThemeColor(currentDiff); }, 50);
+        // --- DIBUJO DE SVG MINIMALISTA PARA EL PERFIL DE RES ---
+        function getCattleSVG(colorHex) {
+            return `
+            <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-md">
+                <!-- Orejas -->
+                <path d="M 20 35 C 10 25, 10 40, 25 40 Z" fill="${colorHex}" stroke="#0f172a" stroke-width="2"/>
+                <path d="M 80 35 C 90 25, 90 40, 75 40 Z" fill="${colorHex}" stroke="#0f172a" stroke-width="2"/>
+                <!-- Cuernos Minimalistas -->
+                <path d="M 30 28 C 25 15, 20 18, 26 26 Z" fill="#cbd5e1" />
+                <path d="M 70 28 C 75 15, 80 18, 74 26 Z" fill="#cbd5e1" />
+                <!-- Cabeza -->
+                <ellipse cx="50" cy="42" rx="26" ry="24" fill="${colorHex}" stroke="#0f172a" stroke-width="2"/>
+                <!-- Hocico -->
+                <ellipse cx="50" cy="58" rx="18" ry="14" fill="#f1f5f9" stroke="#0f172a" stroke-width="2"/>
+                <!-- Narinas -->
+                <circle cx="43" cy="58" r="2.5" fill="#334155"/>
+                <circle cx="57" cy="58" r="2.5" fill="#334155"/>
+                <!-- Ojos -->
+                <circle cx="38" cy="38" r="3" fill="#0f172a"/>
+                <circle cx="62" cy="38" r="3" fill="#0f172a"/>
+                <circle cx="39" cy="37" r="1" fill="#ffffff"/>
+                <circle cx="63" cy="37" r="1" fill="#ffffff"/>
+            </svg>`;
         }
 
-        function getThemeColor(diffIndex) {
-            const styles = getComputedStyle(document.body);
-            if(diffIndex == 0) return styles.getPropertyValue('--c1').trim();
-            if(diffIndex == 1) return styles.getPropertyValue('--c3').trim();
-            if(diffIndex == 2) return styles.getPropertyValue('--c5').trim();
-            return styles.getPropertyValue('--c8').trim();
-        }
+        // --- DASHBOARD / GRID DE TARJETAS ---
+        function renderCattleGrid() {
+            const grid = document.getElementById('cattleGrid');
+            grid.innerHTML = '';
 
-        function setGameMode(mode) {
-            gameMode = mode;
-            document.getElementById('btn-standard').classList.remove('active');
-            document.getElementById('btn-noguess').classList.remove('active');
-            document.getElementById(`btn-${mode}`).classList.add('active');
-        }
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = appState.cattles.filter(c => 
+                c.tag.toLowerCase().includes(query) || 
+                c.breed.toLowerCase().includes(query)
+            );
 
-        function updateStartScreenUI() {
-            label.innerText = difficulties[currentDiff].name;
-            setTimeout(() => { label.style.color = getThemeColor(currentDiff); }, 50);
-            const record = bestTimes[currentDiff];
-            bestTimeLabel.innerText = record ? `Mejor tiempo: ${record}s` : 'Mejor tiempo: --';
-        }
-
-        slider.addEventListener('input', (e) => { currentDiff = e.target.value; updateStartScreenUI(); });
-        window.onload = () => { applyRandomTheme(); updateStartScreenUI(); };
-
-        function showStartScreen() {
-            clearInterval(timerInterval);
-            document.getElementById('game-overlay').classList.remove('active');
-            document.querySelector('.top-bar').style.display = 'flex';
-            document.getElementById('game-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('game-screen').style.display = 'none';
-                document.getElementById('start-screen').style.display = 'flex';
-                updateStartScreenUI();
-                setTimeout(() => document.getElementById('start-screen').style.opacity = '1', 50);
-            }, 400);
-        }
-
-        function startGame() {
-            applyRandomTheme(); 
-            updateStartScreenUI();
-            document.getElementById('game-overlay').classList.remove('active');
-
-            const config = difficulties[currentDiff];
-            rows = config.rows; cols = config.cols; totalMines = config.mines;
-            minesLeft = totalMines; isGameOver = false; firstClick = true; timer = 0; clearInterval(timerInterval);
-            
-            document.getElementById('timer').innerText = '000';
-            updateFlagDisplay();
-            initGrid(); renderBoard();
-            
-            document.querySelector('.top-bar').style.display = 'none';
-            document.getElementById('start-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('start-screen').style.display = 'none';
-                document.getElementById('game-screen').style.display = 'flex';
-                setTimeout(() => document.getElementById('game-screen').style.opacity = '1', 50);
-            }, 400);
-        }
-
-        function toggleMode() {
-            isFlagMode = !isFlagMode;
-            const btn = document.getElementById('mode-toggle');
-            btn.innerHTML = isFlagMode ? '▲ FLAG' : '⛏ DIG';
-            isFlagMode ? btn.classList.add('flag-mode') : btn.classList.remove('flag-mode');
-        }
-
-        function updateFlagDisplay() {
-            document.getElementById('flag-count').innerText = minesLeft;
-            const stat = document.getElementById('flag-stat');
-            
-            // QoL: Cambiar color si las banderas son negativas
-            stat.classList.remove('success', 'danger');
-            if (minesLeft === 0) stat.classList.add('success');
-            else if (minesLeft < 0) stat.classList.add('danger');
-        }
-
-        function initGrid() {
-            grid = Array.from({length: rows}, () => Array(cols).fill(0));
-            revealed = Array.from({length: rows}, () => Array(cols).fill(false));
-            flags = Array.from({length: rows}, () => Array(cols).fill(false));
-        }
-
-        function placeMines(firstR, firstC) {
-            let minesPlaced = 0;
-            const safeDistance = gameMode === 'noguess' ? 1 : 0; 
-
-            while (minesPlaced < totalMines) {
-                let r = Math.floor(Math.random() * rows);
-                let c = Math.floor(Math.random() * cols);
-                if (grid[r][c] !== 'M' && Math.max(Math.abs(r - firstR), Math.abs(c - firstC)) > safeDistance) {
-                    grid[r][c] = 'M';
-                    minesPlaced++;
-                }
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="text-center py-8 text-slate-500 glass-card rounded-2xl">
+                        <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                        <p class="text-xs">No hay reses registradas o que coincidan con la búsqueda.</p>
+                    </div>`;
+                updateGlobalMetrics();
+                lucide.createIcons();
+                return;
             }
 
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    if (grid[r][c] === 'M') continue;
-                    let count = 0;
-                    for (let dr = -1; dr <= 1; dr++) {
-                        for (let dc = -1; dc <= 1; dc++) {
-                            let nr = r + dr, nc = c + dc;
-                            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] === 'M') count++;
-                        }
+            filtered.forEach(cattle => {
+                const metrics = calculateCattleFinancials(cattle);
+                
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl p-3.5 flex items-center justify-between cursor-pointer hover:border-slate-700 active:scale-[0.99] transition';
+                card.onclick = () => openCattleDetail(cattle.id);
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-14 h-14 rounded-xl bg-slate-950/50 border border-slate-800 p-1 flex-shrink-0">
+                            ${getCattleSVG(cattle.color || '#b45309')}
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-sm text-slate-100">${cattle.tag || 'Sin Arete'}</h3>
+                                <span class="text-[10px] px-2 py-0.5 bg-slate-800 text-slate-400 rounded-md border border-slate-700">${cattle.breed || 'Criollo'}</span>
+                            </div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">
+                                Inv: <span class="text-slate-200 font-medium">$${metrics.totalCost.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] text-slate-400 block uppercase">Est. Ganancia</span>
+                        <span class="text-xs font-bold ${metrics.netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
+                            $${metrics.netProfit.toFixed(2)}
+                        </span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            updateGlobalMetrics();
+            lucide.createIcons();
+        }
+
+        // --- CÁLCULOS FINANCIEROS INDIVIDUALES ---
+        function calculateCattleFinancials(c) {
+            const purchase = parseFloat(c.purchasePrice) || 0;
+            const feed = parseFloat(c.feedCost) || 0;
+            const vet = parseFloat(c.vetCost) || 0;
+            
+            const extrasTotal = (c.extraCosts || []).reduce((acc, curr) => acc + (parseFloat(curr.cost) || 0), 0);
+            
+            const totalCost = purchase + feed + vet + extrasTotal;
+            
+            const targetW = parseFloat(c.targetWeight) || 0;
+            const priceKg = parseFloat(c.pricePerKg) || 0;
+            const estimatedSale = targetW * priceKg;
+            
+            const netProfit = estimatedSale - totalCost;
+
+            return { totalCost, estimatedSale, netProfit };
+        }
+
+        // --- CÁLCULOS GLOBALES ---
+        function updateGlobalMetrics() {
+            let totalInv = 0;
+            let totalProfit = 0;
+
+            appState.cattles.forEach(c => {
+                const m = calculateCattleFinancials(c);
+                totalInv += m.totalCost;
+                totalProfit += m.netProfit;
+            });
+
+            document.getElementById('totalCattleBadge').innerText = `${appState.cattles.length} Cabeza(s)`;
+            document.getElementById('globalInvestment').innerText = `$${totalInv.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            
+            const profitEl = document.getElementById('globalProfit');
+            profitEl.innerText = `$${totalProfit.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            profitEl.className = `text-base font-bold ${totalProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+        }
+
+        // --- VISTA DETALLE ---
+        function openCattleDetail(id) {
+            activeCattleId = id;
+            const cattle = appState.cattles.find(c => c.id === id);
+            if (!cattle) return;
+
+            // Render SVG y Datos
+            document.getElementById('detailTagId').innerText = cattle.tag ? `Arete ${cattle.tag}` : 'Sin Arete';
+            document.getElementById('detailBreed').innerText = cattle.breed || 'Sin Raza Registrada';
+            document.getElementById('avatarContainer').innerHTML = getCattleSVG(cattle.color || '#b45309');
+
+            // Render Selector Colores
+            const colorContainer = document.getElementById('colorPickerContainer');
+            colorContainer.innerHTML = '';
+            PALETTE.forEach(p => {
+                const dot = document.createElement('div');
+                dot.className = `color-dot ${cattle.color === p.hex ? 'active' : ''}`;
+                dot.style.backgroundColor = p.hex;
+                dot.title = p.name;
+                dot.onclick = () => {
+                    cattle.color = p.hex;
+                    saveData();
+                    openCattleDetail(id); // Recargar panel de color y avatar
+                };
+                colorContainer.appendChild(dot);
+            });
+
+            // Inputs Formulario
+            document.getElementById('inputTag').value = cattle.tag || '';
+            document.getElementById('inputBreed').value = cattle.breed || '';
+            document.getElementById('inputPurchasePrice').value = cattle.purchasePrice || '';
+            document.getElementById('inputWeightInitial').value = cattle.weightInitial || '';
+            document.getElementById('inputFeedCost').value = cattle.feedCost || '';
+            document.getElementById('inputVetCost').value = cattle.vetCost || '';
+            document.getElementById('inputTargetWeight').value = cattle.targetWeight || '';
+            document.getElementById('inputPricePerKg').value = cattle.pricePerKg || '';
+
+            renderExtraCostsList(cattle);
+            updateCurrentCattleCalculations();
+
+            // Cambiar Pantallas
+            document.getElementById('viewDashboard').classList.add('page-hidden');
+            document.getElementById('viewDetail').classList.remove('page-hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showDashboard() {
+            document.getElementById('viewDetail').classList.add('page-hidden');
+            document.getElementById('viewDashboard').classList.remove('page-hidden');
+            renderCattleGrid();
+        }
+
+        // --- ACTUALIZACIONES DINÁMICAS ---
+        function updateCurrentCattleField(field, value) {
+            const cattle = appState.cattles.find(c => c.id === activeCattleId);
+            if (cattle) {
+                cattle[field] = value;
+                if (field === 'tag') document.getElementById('detailTagId').innerText = value ? `Arete ${value}` : 'Sin Arete';
+                if (field === 'breed') document.getElementById('detailBreed').innerText = value || 'Sin Raza Registrada';
+                saveData();
+            }
+        }
+
+        function updateCurrentCattleCalculations() {
+            const cattle = appState.cattles.find(c => c.id === activeCattleId);
+            if (!cattle) return;
+
+            cattle.purchasePrice = parseFloat(document.getElementById('inputPurchasePrice').value) || 0;
+            cattle.weightInitial = parseFloat(document.getElementById('inputWeightInitial').value) || 0;
+            cattle.feedCost = parseFloat(document.getElementById('inputFeedCost').value) || 0;
+            cattle.vetCost = parseFloat(document.getElementById('inputVetCost').value) || 0;
+            cattle.targetWeight = parseFloat(document.getElementById('inputTargetWeight').value) || 0;
+            cattle.pricePerKg = parseFloat(document.getElementById('inputPricePerKg').value) || 0;
+
+            const m = calculateCattleFinancials(cattle);
+
+            document.getElementById('summaryTotalCost').innerText = `$${m.totalCost.toFixed(2)}`;
+            document.getElementById('summaryEstimatedSale').innerText = `$${m.estimatedSale.toFixed(2)}`;
+            
+            const netProfitEl = document.getElementById('summaryNetProfit');
+            netProfitEl.innerText = `$${m.netProfit.toFixed(2)}`;
+            netProfitEl.className = `font-bold ${m.netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+
+            saveData();
+        }
+
+        // --- CAMPOS DINÁMICOS DE COSTOS EXTRA ---
+        function renderExtraCostsList(cattle) {
+            const container = document.getElementById('extraCostsList');
+            container.innerHTML = '';
+
+            if (!cattle.extraCosts || cattle.extraCosts.length === 0) {
+                container.innerHTML = `<p class="text-[11px] text-slate-500 italic text-center py-2">Sin gastos adicionales agregados.</p>`;
+                return;
+            }
+
+            cattle.extraCosts.forEach((extra, idx) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-2';
+                row.innerHTML = `
+                    <input type="text" value="${extra.concept}" placeholder="Concepto (ej. Vacuna)" 
+                           onchange="updateExtraCostItem('${extra.id}', 'concept', this.value)"
+                           class="flex-1 bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                    <input type="number" value="${extra.cost}" placeholder="$" 
+                           oninput="updateExtraCostItem('${extra.id}', 'cost', this.value)"
+                           class="w-24 bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                    <button onclick="removeExtraCostRow('${extra.id}')" class="p-2 text-slate-500 hover:text-rose-400">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+            lucide.createIcons();
+        }
+
+        function addExtraCostRow() {
+            const cattle = appState.cattles.find(c => c.id === activeCattleId);
+            if (cattle) {
+                if (!cattle.extraCosts) cattle.extraCosts = [];
+                cattle.extraCosts.push({ id: 'ex_' + Date.now(), concept: 'Medicamento / Varios', cost: 0 });
+                saveData();
+                renderExtraCostsList(cattle);
+                updateCurrentCattleCalculations();
+            }
+        }
+
+        function updateExtraCostItem(extraId, key, value) {
+            const cattle = appState.cattles.find(c => c.id === activeCattleId);
+            if (cattle && cattle.extraCosts) {
+                const item = cattle.extraCosts.find(e => e.id === extraId);
+                if (item) {
+                    item[key] = key === 'cost' ? (parseFloat(value) || 0) : value;
+                    saveData();
+                    updateCurrentCattleCalculations();
+                }
+            }
+        }
+
+        function removeExtraCostRow(extraId) {
+            const cattle = appState.cattles.find(c => c.id === activeCattleId);
+            if (cattle && cattle.extraCosts) {
+                cattle.extraCosts = cattle.extraCosts.filter(e => e.id !== extraId);
+                saveData();
+                renderExtraCostsList(cattle);
+                updateCurrentCattleCalculations();
+            }
+        }
+
+        // --- CREACIÓN / ELIMINACIÓN DE RES ---
+        function openModalNewCattle() {
+            const nextNumber = appState.cattles.length + 1;
+            const newCattle = {
+                id: Date.now().toString(),
+                tag: `B-${100 + nextNumber}`,
+                breed: "Criollo",
+                color: PALETTE[Math.floor(Math.random() * PALETTE.length)].hex,
+                purchasePrice: 0,
+                weightInitial: 0,
+                feedCost: 0,
+                vetCost: 0,
+                targetWeight: 0,
+                pricePerKg: 0,
+                extraCosts: []
+            };
+            appState.cattles.push(newCattle);
+            saveData();
+            openCattleDetail(newCattle.id);
+        }
+
+        function deleteCurrentCattle() {
+            const cattle = appState.cattles.find(c => c.id === activeCattleId);
+            if (confirm(`¿Estás seguro de eliminar el registro de la res ${cattle?.tag || ''}?`)) {
+                appState.cattles = appState.cattles.filter(c => c.id !== activeCattleId);
+                saveData();
+                showDashboard();
+            }
+        }
+
+        // --- EXPORTAR E IMPORTAR COPIAS DE SEGURIDAD (QoL) ---
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState.cattles, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `GanaTrack_Reses_Backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+        }
+
+        function importData(event) {
+            const fileReader = new FileReader();
+            fileReader.onload = function (e) {
+                try {
+                    const loadedState = JSON.parse(e.target.result);
+                    if (Array.isArray(loadedState)) {
+                        appState.cattles = loadedState;
+                        saveData();
+                        renderCattleGrid();
+                        alert("¡Base de datos de reses importada con éxito!");
+                    } else {
+                        alert("El archivo no tiene un formato válido.");
                     }
-                    grid[r][c] = count;
+                } catch (err) {
+                    alert("Error al leer el archivo JSON.");
                 }
-            }
-            
-            timerInterval = setInterval(() => {
-                timer++; document.getElementById('timer').innerText = timer.toString().padStart(3, '0');
-            }, 1000);
-        }
-
-        function renderBoard() {
-            const board = document.getElementById('board');
-            board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-            board.innerHTML = '';
-            
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'cell';
-                    
-                    // LÓGICA TÁCTIL CORREGIDA Y DEFINITIVA
-                    let pressTimer;
-                    let touchFiredFlag = false;
-
-                    cell.addEventListener('touchstart', (e) => {
-                        if (isGameOver || revealed[r][c]) return;
-                        touchFiredFlag = false;
-                        
-                        pressTimer = setTimeout(() => {
-                            touchFiredFlag = true;
-                            handleFlag(r, c);
-                            if (navigator.vibrate) navigator.vibrate(50);
-                        }, 500);
-                    }, { passive: true });
-
-                    cell.addEventListener('touchmove', () => { 
-                        clearTimeout(pressTimer); 
-                    }, { passive: true });
-
-                    cell.addEventListener('touchend', (e) => {
-                        clearTimeout(pressTimer);
-                        // Si el temporizador de 500ms se cumplió, bloqueamos el comportamiento por defecto (click)
-                        if (touchFiredFlag) {
-                            if (e.cancelable) e.preventDefault();
-                        }
-                    }, { passive: false }); // Debe ser false para permitir preventDefault()
-
-                    // Evento Clic Universal (Escritorio + Móvil Taps Cortos)
-                    cell.addEventListener('click', (e) => {
-                        // Si ya colocamos la bandera por touch, ignoramos el click
-                        if (touchFiredFlag) return;
-                        handleInteraction(r, c);
-                    });
-
-                    // Evento Clic Derecho (Escritorio)
-                    cell.addEventListener('contextmenu', (e) => { 
-                        e.preventDefault(); 
-                        handleFlag(r, c); 
-                    });
-                    
-                    board.appendChild(cell);
-                }
-            }
-            updateBoardVisuals();
-        }
-
-        function handleInteraction(r, c) {
-            if (isGameOver) return;
-            
-            if (isFlagMode) {
-                handleFlag(r, c);
-            } else {
-                if (revealed[r][c] && grid[r][c] > 0) {
-                    chordCell(r, c);
-                } else {
-                    revealCell(r, c);
-                }
-            }
-        }
-
-        function handleFlag(r, c) {
-            if (isGameOver || revealed[r][c]) return;
-            flags[r][c] = !flags[r][c];
-            minesLeft += flags[r][c] ? -1 : 1;
-            updateFlagDisplay();
-            updateBoardVisuals();
-        }
-
-        function chordCell(r, c) {
-            let flagCount = 0;
-            for (let dr = -1; dr <= 1; dr++) {
-                for (let dc = -1; dc <= 1; dc++) {
-                    let nr = r + dr, nc = c + dc;
-                    if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && flags[nr][nc]) {
-                        flagCount++;
-                    }
-                }
-            }
-            
-            if (flagCount === grid[r][c]) {
-                for (let dr = -1; dr <= 1; dr++) {
-                    for (let dc = -1; dc <= 1; dc++) {
-                        let nr = r + dr, nc = c + dc;
-                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && !flags[nr][nc] && !revealed[nr][nc]) {
-                            revealCell(nr, nc);
-                        }
-                    }
-                }
-            }
-        }
-
-        function revealCell(r, c) {
-            if (isGameOver || revealed[r][c] || flags[r][c]) return;
-            if (firstClick) { placeMines(r, c); firstClick = false; }
-            revealed[r][c] = true;
-
-            if (grid[r][c] === 'M') { gameOver(false, r, c); return; }
-            if (grid[r][c] === 0) {
-                for (let dr = -1; dr <= 1; dr++) {
-                    for (let dc = -1; dc <= 1; dc++) {
-                        let nr = r + dr, nc = c + dc;
-                        if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) revealCell(nr, nc);
-                    }
-                }
-            }
-            updateBoardVisuals(); checkWin();
-        }
-
-        function updateBoardVisuals() {
-            const cells = document.getElementById('board').children;
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    const el = cells[r * cols + c];
-                    const isExploded = el.classList.contains('exploded');
-                    el.className = 'cell' + (isExploded ? ' exploded' : ''); 
-                    
-                    if (!isExploded) el.innerHTML = ''; 
-
-                    if (revealed[r][c]) {
-                        el.classList.add('revealed');
-                        if (grid[r][c] === 'M' && !isExploded) {
-                            el.innerHTML = mineIconHTML;
-                        } else if (grid[r][c] === 'X') {
-                            // Bandera incorrecta al perder
-                            el.innerHTML = mineIconHTML;
-                            el.style.color = "var(--text-muted)";
-                            el.style.opacity = "0.5";
-                            el.style.background = "rgba(255,0,0,0.2)";
-                        } else if (grid[r][c] > 0) { 
-                            el.innerText = grid[r][c]; 
-                            el.style.color = `var(--c${grid[r][c]})`; 
-                        }
-                    } else if (flags[r][c]) {
-                        el.classList.add('flag');
-                    }
-                }
-            }
-        }
-
-        function gameOver(win, clickedRow, clickedCol) {
-            isGameOver = true; clearInterval(timerInterval);
-            
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) { 
-                    if (grid[r][c] === 'M' && !flags[r][c]) revealed[r][c] = true; 
-                    if (grid[r][c] !== 'M' && flags[r][c]) {
-                        revealed[r][c] = true;
-                        grid[r][c] = 'X'; 
-                    }
-                }
-            }
-            
-            updateBoardVisuals();
-            const overlay = document.getElementById('game-overlay');
-            const msg = document.getElementById('overlay-msg');
-            
-            if (win) {
-                const currentRecord = bestTimes[currentDiff];
-                if (!currentRecord || timer < currentRecord) {
-                    bestTimes[currentDiff] = timer;
-                    localStorage.setItem('minimalMinesweeperBestTimes', JSON.stringify(bestTimes));
-                }
-                msg.innerText = `¡Completado en ${timer}s!`;
-                msg.style.color = "var(--success)";
-            } else {
-                if (clickedRow !== undefined && clickedCol !== undefined) {
-                    const el = document.getElementById('board').children[clickedRow * cols + clickedCol];
-                    el.innerHTML = mineIconHTML;
-                    el.classList.add('exploded'); // QoL: Hace saltar la animación de detonación roja
-                }
-                if(navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                msg.innerText = "¡Mina Detonada!";
-                msg.style.color = "var(--accent)";
-            }
-
-            // Mostrar el Overlay de Reintento después de 1 segundo
-            setTimeout(() => {
-                overlay.classList.add('active');
-            }, 1000);
-        }
-
-        function checkWin() {
-            let revealedCount = 0;
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) { if (revealed[r][c]) revealedCount++; }
-            }
-            if (revealedCount === (rows * cols) - totalMines) gameOver(true);
+            };
+            fileReader.readAsText(event.target.files[0]);
         }
     </script>
 </body>
