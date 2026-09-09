@@ -3,291 +3,590 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GanaTrack - Inversión Bovina</title>
+    <title>GanaTrack Pro — Bovina Finance</title>
     <!-- Tailwind CSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
         :root {
-            --app-bg: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
+            --bg-body: #f8fafc;
+            --surface-card: #ffffff;
+            --border-card: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --input-bg: #f1f5f9;
         }
+
+        body.dark-mode {
+            --bg-body: #090d16;
+            --surface-card: #111827;
+            --border-card: #1f2937;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --input-bg: #030712;
+        }
+
         body {
-            background-color: var(--app-bg);
-            color: #f8fafc;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            transition: background-color 0.25s ease, color 0.25s ease;
             -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
+            overflow-x: hidden;
         }
-        .glass-card {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+
+        .font-mono-code {
+            font-family: 'JetBrains Mono', monospace;
         }
-        /* Transiciones de pantalla suave */
+
+        /* Canvas Interactivo de Fondo */
+        #interactiveBgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 10;
+        }
+
+        .app-header {
+            background-color: var(--surface-card);
+            border-bottom: 1px solid var(--border-card);
+            transition: background-color 0.25s ease, border-color 0.25s ease;
+        }
+
+        .app-card {
+            background-color: var(--surface-card);
+            border: 1px solid var(--border-card);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.2s ease, transform 0.15s ease, background-color 0.25s ease;
+        }
+
+        .app-card:hover {
+            border-color: #06b6d4;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
         .page-view {
-            transition: opacity 0.2s ease-in-out;
+            transition: opacity 0.15s ease;
         }
+
         .page-hidden {
             display: none !important;
             opacity: 0;
         }
-        /* Color pickers circulares para selección móvil */
-        .color-dot {
+
+        .swatch-pill {
             width: 28px;
             height: 28px;
-            border-radius: 50%;
+            border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.2s, border 0.2s;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid transparent;
+            transition: transform 0.15s ease, border-color 0.15s ease;
         }
-        .color-dot:active, .color-dot.active {
+
+        .swatch-pill:hover, .swatch-pill.active {
             transform: scale(1.15);
-            border: 2px solid #38bdf8;
+            border-color: #06b6d4;
+        }
+
+        .app-input {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-card);
+            color: var(--text-primary);
+            transition: border-color 0.15s ease, background-color 0.25s ease, color 0.25s ease;
+        }
+
+        .app-input:focus {
+            outline: none;
+            border-color: #06b6d4;
+        }
+
+        .app-button-secondary {
+            background-color: var(--surface-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-primary);
+            transition: border-color 0.15s ease, background-color 0.25s ease, color 0.25s ease;
+        }
+
+        .app-button-secondary:hover {
+            border-color: #06b6d4;
+        }
+
+        .app-box-nested {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-card);
+            color: var(--text-primary);
+            transition: background-color 0.25s ease, border-color 0.25s ease;
+        }
+
+        .text-themed-primary {
+            color: var(--text-primary);
+        }
+
+        .text-themed-secondary {
+            color: var(--text-secondary);
         }
     </style>
 </head>
 <body class="min-h-screen pb-12">
 
-    <!-- CABECERA PRINCIPAL -->
-    <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl">
-                    <i data-lucide="beef" class="w-6 h-6"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-base leading-tight">GanaTrack</h1>
-                    <p class="text-[10px] text-slate-400">Control Financiero de Reses</p>
-                </div>
-            </div>
-            <div class="flex items-center gap-2">
-                <button onclick="exportData()" title="Exportar Copia de Seguridad" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition">
-                    <i data-lucide="download" class="w-4 h-4"></i>
-                </button>
-                <label title="Cargar Copia" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 cursor-pointer transition">
-                    <i data-lucide="upload" class="w-4 h-4"></i>
-                    <input type="file" id="importFile" class="hidden" onchange="importData(event)">
-                </label>
-            </div>
-        </div>
-    </header>
+    <!-- CANVAS INTERACTIVO AVANZADO -->
+    <canvas id="interactiveBgCanvas"></canvas>
 
-    <!-- VISTA 1: DASHBOARD / MENÚ PRINCIPAL -->
-    <main id="viewDashboard" class="page-view max-w-md mx-auto p-4 flex flex-col gap-4">
-        
-        <!-- RESUMEN FINANCIERO GLOBAL -->
-        <div class="glass-card rounded-2xl p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/90 shadow-xl">
-            <div class="flex justify-between items-center mb-3">
-                <span class="text-xs text-slate-400 font-medium uppercase tracking-wider">Métricas Globales</span>
-                <span id="totalCattleBadge" class="text-xs font-bold bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                    0 Cabeza(s)
-                </span>
-            </div>
-            <div class="grid grid-cols-2 gap-3 mb-3">
-                <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800">
-                    <span class="text-[11px] text-slate-400 block">Inversión Total</span>
-                    <span id="globalInvestment" class="text-base font-bold text-slate-100">$0.00</span>
+    <div class="content-layer">
+        <!-- HEADER -->
+        <header class="app-header backdrop-blur-md sticky top-0 z-50">
+            <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 via-teal-500 to-indigo-500 p-0.5 flex items-center justify-center shadow-md">
+                        <div class="w-full h-full bg-white dark:bg-slate-900 rounded-[7px] flex items-center justify-center">
+                            <i data-lucide="beef" class="w-4 h-4 text-emerald-500"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-base tracking-tight uppercase flex items-center gap-1.5 text-themed-primary">
+                            GANATRACK <span class="gradient-text font-black text-xs">PRO</span>
+                        </span>
+                        <p class="text-[10px] text-themed-secondary font-medium">Control Financiero Ganadero</p>
+                    </div>
                 </div>
-                <div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800">
-                    <span class="text-[11px] text-slate-400 block">Ganancia Est. Total</span>
-                    <span id="globalProfit" class="text-base font-bold text-emerald-400">$0.00</span>
+                
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleDarkMode()" title="Cambiar Tema" class="p-2 app-button-secondary rounded-xl transition">
+                        <i data-lucide="sun" id="themeIcon" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="exportData()" title="Exportar Respaldo" class="p-2 app-button-secondary rounded-xl transition">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                    </button>
+                    <label title="Cargar Respaldo" class="p-2 app-button-secondary rounded-xl transition cursor-pointer">
+                        <i data-lucide="upload" class="w-4 h-4"></i>
+                        <input type="file" id="importFile" class="hidden" onchange="importData(event)">
+                    </label>
                 </div>
             </div>
-            <!-- Búsqueda -->
-            <div class="relative">
-                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
-                <input type="text" id="searchInput" oninput="renderCattleGrid()" placeholder="Buscar por arete o raza..." 
-                       class="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500">
-            </div>
-        </div>
+        </header>
 
-        <!-- TARJETAS DE RESES -->
-        <div id="cattleGrid" class="grid grid-cols-1 gap-3">
-            <!-- Renderizado dinámico -->
-        </div>
-
-        <!-- BOTÓN REGISTRAR -->
-        <button onclick="openModalNewCattle()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold rounded-2xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 active:scale-[0.98] transition">
-            <i data-lucide="plus-circle" class="w-5 h-5"></i> Registrar Nueva Res
-        </button>
-    </main>
-
-    <!-- VISTA 2: DETALLE / EDICIÓN DE RES (Corrección de espacio superior ajustando padding y márgenes) -->
-    <main id="viewDetail" class="page-view page-hidden max-w-md mx-auto px-4 py-2 flex flex-col gap-3">
-        
-        <div class="flex items-center justify-between gap-2">
-            <button onclick="showDashboard()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-slate-300 text-xs font-semibold flex items-center gap-1 transition">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al Menú
-            </button>
-            <button onclick="deleteCurrentCattle()" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 rounded-xl text-xs font-semibold transition">
-                <i data-lucide="trash-2" class="w-4 h-4"></i> Eliminar
-            </button>
-        </div>
-
-        <!-- PERFIL MINIMALISTA DE LA RES CON PERSONALIZACIÓN AVANZADA -->
-        <div class="glass-card rounded-2xl p-3 flex flex-col items-center justify-center gap-2 relative overflow-hidden">
-            <div id="avatarContainer" class="w-28 h-28 flex items-center justify-center transition-transform duration-300">
-                <!-- SVG Dinámico -->
-            </div>
+        <!-- VISTA 1: DASHBOARD -->
+        <main id="viewDashboard" class="page-view max-w-6xl mx-auto p-4 md:p-6 space-y-6">
             
-            <div class="text-center">
-                <h2 id="detailTagId" class="text-lg font-bold text-slate-100 leading-tight">Arete #000</h2>
-                <p id="detailBreed" class="text-[11px] text-slate-400">Raza / Descripción</p>
-            </div>
-
-            <!-- SELECTORES DE PERSONALIZACIÓN DEL AVATAR -->
-            <div class="w-full pt-2 border-t border-slate-800/80 space-y-2">
-                <!-- Color Base -->
-                <div>
-                    <span class="text-[10px] font-semibold text-slate-400 block text-center mb-1">Color Base de la Piel</span>
-                    <div class="flex justify-center items-center gap-2" id="baseColorPicker"></div>
-                </div>
-                <!-- Color y Patrón de Manchas -->
-                <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800/40">
+            <div class="app-card rounded-2xl p-5 space-y-4 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-indigo-500"></div>
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
                     <div>
-                        <span class="text-[10px] font-semibold text-slate-400 block text-center mb-1">Patrón Manchas</span>
-                        <select id="spotPatternSelect" onchange="updateCustomization('spotPattern', this.value)" class="w-full bg-slate-950/60 border border-slate-800 rounded-lg p-1 text-[11px] text-slate-200">
-                            <option value="none">Sin manchas</option>
-                            <option value="eye">Ojo y Nariz</option>
-                            <option value="patch">Múltiples Manchas</option>
-                        </select>
+                        <h2 class="font-bold text-sm tracking-wide uppercase text-themed-primary">Consolidado General de Inversión</h2>
+                        <p class="text-xs text-themed-secondary">Resumen contable acumulado de compras, mantenimiento y retornos</p>
                     </div>
-                    <div>
-                        <span class="text-[10px] font-semibold text-slate-400 block text-center mb-1">Color Mancha</span>
-                        <div class="flex justify-center items-center gap-1.5" id="spotColorPicker"></div>
+                    <span id="totalCattleBadge" class="text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full">
+                        0 Cabezas
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <div class="p-3.5 app-box-nested rounded-xl">
+                        <span class="text-[11px] font-medium text-themed-secondary block uppercase">Inversión Total</span>
+                        <span id="globalInvestment" class="font-bold text-base text-themed-primary">$0.00</span>
+                    </div>
+                    <div class="p-3.5 app-box-nested rounded-xl">
+                        <span class="text-[11px] font-medium text-themed-secondary block uppercase">Capital Abonado</span>
+                        <span id="globalPaid" class="font-bold text-base text-cyan-600 dark:text-cyan-400">$0.00</span>
+                    </div>
+                    <div class="p-3.5 app-box-nested rounded-xl">
+                        <span class="text-[11px] font-medium text-themed-secondary block uppercase">Pendiente Deuda</span>
+                        <span id="globalDebt" class="font-bold text-base text-amber-600 dark:text-amber-400">$0.00</span>
+                    </div>
+                    <div class="p-3.5 app-box-nested rounded-xl">
+                        <span class="text-[11px] font-medium text-themed-secondary block uppercase">Ganancia Est. Neta</span>
+                        <span id="globalProfit" class="font-bold text-base text-emerald-600 dark:text-emerald-400">$0.00</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 pt-1">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-themed-secondary"></i>
+                        <input type="text" id="searchInput" oninput="renderCattleGrid()" placeholder="Buscar por arete, raza, sexo..." 
+                               class="app-input w-full rounded-xl p-2 pl-9 text-xs placeholder:text-slate-400 dark:placeholder:text-slate-500">
+                    </div>
+                    <div class="flex app-box-nested rounded-xl p-1 text-xs gap-1">
+                        <button onclick="setFilterStatus('all')" id="btnFilterAll" class="px-3 py-1 rounded-lg font-semibold text-[11px] bg-emerald-500 text-white shadow-sm">Todas</button>
+                        <button onclick="setFilterStatus('debt')" id="btnFilterDebt" class="px-3 py-1 rounded-lg font-semibold text-[11px] text-themed-secondary hover:text-themed-primary">Con Deuda</button>
+                        <button onclick="setFilterStatus('paid')" id="btnFilterPaid" class="px-3 py-1 rounded-lg font-semibold text-[11px] text-themed-secondary hover:text-themed-primary">Liquidadas</button>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- FORMULARIO DE COSTOS Y PROYECCIÓN FINANCIERA -->
-        <div class="glass-card rounded-2xl p-3.5 space-y-3">
-            <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2 border-b border-slate-800 pb-2">
-                <i data-lucide="calculator" class="w-4 h-4 text-emerald-400"></i> Parámetros e Inversión Básica
-            </h3>
+            <div id="cattleGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
-            <div class="grid grid-cols-2 gap-2.5">
-                <div>
-                    <label class="text-[10px] text-slate-400 block mb-1">Arete / ID</label>
-                    <input type="text" id="inputTag" onchange="updateCurrentCattleField('tag', this.value)" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="text-[10px] text-slate-400 block mb-1">Raza / Tipo</label>
-                    <input type="text" id="inputBreed" onchange="updateCurrentCattleField('breed', this.value)" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-            </div>
+            <button onclick="openModalNewCattle()" class="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-600 hover:opacity-95 text-white font-bold rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.99] transition">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i> Registrar Nueva Cabeza de Ganado
+            </button>
+        </main>
 
-            <div class="grid grid-cols-2 gap-2.5">
-                <div>
-                    <label class="text-[10px] text-slate-400 block mb-1">Costo Adquisición ($)</label>
-                    <input type="number" id="inputPurchasePrice" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="text-[10px] text-slate-400 block mb-1">Peso Compra (kg)</label>
-                    <input type="number" id="inputWeightInitial" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-2.5">
-                <div>
-                    <label class="text-[10px] text-slate-400 block mb-1">Gasto Alimento ($)</label>
-                    <input type="number" id="inputFeedCost" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="text-[10px] text-slate-400 block mb-1">Veterinario Base ($)</label>
-                    <input type="number" id="inputVetCost" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-            </div>
-        </div>
-
-        <!-- CAMPOS DINÁMICOS ADICIONALES (MEDICAMENTOS, FLETES, ETC.) -->
-        <div class="glass-card rounded-2xl p-3.5 space-y-3">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2">
-                    <i data-lucide="syringe" class="w-4 h-4 text-emerald-400"></i> Costos Extra / Medicamentos
-                </h3>
-                <button onclick="addExtraCostRow()" class="px-2 py-1 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 rounded-lg text-xs font-semibold flex items-center gap-1 transition">
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i> Agregar
+        <!-- VISTA 2: DETALLE -->
+        <main id="viewDetail" class="page-view page-hidden max-w-6xl mx-auto p-4 md:p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                <button onclick="showDashboard()" class="px-3.5 py-2 app-button-secondary rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al Menú
                 </button>
-            </div>
-
-            <div id="extraCostsList" class="space-y-2">
-                <!-- Lista editable de costos adicionales -->
-            </div>
-        </div>
-
-        <!-- PROYECCIÓN DE SALIDA Y VENTA -->
-        <div class="glass-card rounded-2xl p-3.5 space-y-3">
-            <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2 border-b border-slate-800 pb-2">
-                <i data-lucide="trending-up" class="w-4 h-4 text-emerald-400"></i> Proyección de Venta y Ganancia
-            </h3>
-
-            <div class="grid grid-cols-2 gap-2.5">
-                <div>
-                    <label class="text-[10px] text-slate-400 block mb-1">Peso Est. Venta (kg)</label>
-                    <input type="number" id="inputTargetWeight" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="text-[10px] text-slate-400 block mb-1">Precio x kg Venta ($)</label>
-                    <input type="number" id="inputPricePerKg" oninput="updateCurrentCattleCalculations()" class="w-full bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                <div class="flex items-center gap-2">
+                    <button onclick="copySummaryToClipboard()" title="Copiar Resumen Financiero" class="px-3 py-2 bg-indigo-500/10 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/20 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+                        <i data-lucide="copy" class="w-4 h-4"></i> Copiar Ficha
+                    </button>
+                    <button onclick="deleteCurrentCattle()" class="px-3 py-2 bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> Eliminar
+                    </button>
                 </div>
             </div>
 
-            <!-- RESUMEN FINAL POR RES -->
-            <div class="bg-slate-950/70 rounded-xl p-3 border border-slate-800 space-y-2 mt-2">
-                <div class="flex justify-between text-xs text-slate-400">
-                    <span>Costo Total Acumulado:</span>
-                    <span id="summaryTotalCost" class="font-semibold text-slate-200">$0.00</span>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
+                <div class="app-card rounded-2xl p-4 space-y-4 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-indigo-500"></div>
+                    <div class="text-center pb-2 border-b border-slate-200 dark:border-slate-800">
+                        <span class="text-[10px] font-semibold uppercase text-themed-secondary block">Perfil Individual</span>
+                        <h2 id="detailTagId" class="font-extrabold text-xl text-themed-primary">Arete #000</h2>
+                        <p id="detailBreed" class="text-xs text-themed-secondary">Raza / Registro</p>
+                    </div>
+
+                    <div class="app-box-nested rounded-xl p-3 flex items-center justify-center h-44 shadow-inner">
+                        <div id="avatarContainer" class="w-36 h-36"></div>
+                    </div>
+
+                    <div class="space-y-3 pt-1 text-xs">
+                        <div>
+                            <label class="text-themed-secondary font-semibold text-[11px] block text-center mb-1.5">Color Base de Piel</label>
+                            <div class="flex justify-center items-center gap-2" id="baseColorPicker"></div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+                            <div>
+                                <label class="text-themed-secondary font-semibold text-[10px] uppercase block mb-1">Patrón Mancha</label>
+                                <select id="spotPatternSelect" onchange="updateCustomization('spotPattern', this.value)" class="app-input w-full rounded-xl p-2 text-xs">
+                                    <option value="none">Sin manchas</option>
+                                    <option value="eye">Ojo y Nariz</option>
+                                    <option value="patch">Manchas Internas</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-themed-secondary font-semibold text-[10px] uppercase block mb-1">Color Mancha</label>
+                                <div class="flex justify-center items-center gap-1.5 pt-1" id="spotColorPicker"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex justify-between text-xs text-slate-400">
-                    <span>Venta Estimada Total:</span>
-                    <span id="summaryEstimatedSale" class="font-semibold text-slate-200">$0.00</span>
-                </div>
-                <div class="flex justify-between text-xs font-bold border-t border-slate-800 pt-2">
-                    <span class="text-slate-300">Ganancia Neta Estimada:</span>
-                    <span id="summaryNetProfit" class="text-emerald-400">$0.00</span>
+
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="app-card rounded-2xl p-4 space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wide border-b border-slate-200 dark:border-slate-800 pb-2 text-themed-primary flex items-center gap-2">
+                            <i data-lucide="tag" class="w-4 h-4 text-emerald-500"></i> Parámetros de Registro
+                        </h3>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Arete / ID</label>
+                                <input type="text" id="inputTag" onchange="updateCurrentCattleField('tag', this.value)" class="app-input w-full rounded-xl p-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Raza / Tipo</label>
+                                <input type="text" id="inputBreed" onchange="updateCurrentCattleField('breed', this.value)" class="app-input w-full rounded-xl p-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Sexo / Género</label>
+                                <select id="inputGender" onchange="updateCustomization('gender', this.value)" class="app-input w-full rounded-xl p-2 text-xs">
+                                    <option value="macho">Macho</option>
+                                    <option value="hembra">Hembra</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Fecha de Compra (Editable)</label>
+                                <input type="date" id="inputPurchaseDate" onchange="updateCurrentCattleCalculations()" class="app-input w-full rounded-xl p-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Tiempo Transcurrido (Automático)</label>
+                                <div id="displayDaysInFarm" class="app-input w-full rounded-xl p-2 text-xs font-semibold text-themed-primary">0 Días en Engorda</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="app-card rounded-2xl p-4 space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wide border-b border-slate-200 dark:border-slate-800 pb-2 text-themed-primary flex items-center gap-2">
+                            <i data-lucide="wallet" class="w-4 h-4 text-cyan-500"></i> Adquisición & Financiamiento
+                        </h3>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Costo Compra ($)</label>
+                                <input type="number" id="inputPurchasePrice" oninput="updateCurrentCattleCalculations()" class="app-input w-full rounded-xl p-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Monto Pagado / Abonado ($)</label>
+                                <input type="number" id="inputPaidAmount" oninput="updateCurrentCattleCalculations()" class="app-input w-full rounded-xl p-2 text-xs">
+                            </div>
+                        </div>
+
+                        <div class="app-box-nested p-3 rounded-xl space-y-2">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <span class="text-themed-secondary">Progreso de Liquidación</span>
+                                <span id="paymentStatusText" class="text-emerald-600 dark:text-emerald-400">0%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                                <div id="paymentProgressBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-2 transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-themed-secondary pt-0.5">
+                                <span>Saldo Pendiente: <strong id="displayPendingDebt" class="text-amber-600 dark:text-amber-400">$0.00</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="app-card rounded-2xl p-4 space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wide border-b border-slate-200 dark:border-slate-800 pb-2 text-themed-primary flex items-center gap-2">
+                            <i data-lucide="scale" class="w-4 h-4 text-indigo-500"></i> Engorda & Sanitarios
+                        </h3>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Peso Compra (kg)</label>
+                                <input type="number" id="inputWeightInitial" oninput="updateCurrentCattleCalculations()" class="app-input w-full rounded-xl p-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Gasto Alimento ($)</label>
+                                <input type="number" id="inputFeedCost" oninput="updateCurrentCattleCalculations()" class="app-input w-full rounded-xl p-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Veterinario ($)</label>
+                                <input type="number" id="inputVetCost" oninput="updateCurrentCattleCalculations()" class="app-input w-full rounded-xl p-2 text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="app-card rounded-2xl p-4 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-2">
+                            <h3 class="text-xs font-bold uppercase tracking-wide text-themed-primary flex items-center gap-2">
+                                <i data-lucide="syringe" class="w-4 h-4 text-pink-500"></i> Gastos Extra / Medicación
+                            </h3>
+                            <button onclick="addExtraCostRow()" class="px-2.5 py-1 app-button-secondary rounded-lg text-xs font-semibold flex items-center gap-1 transition">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Agregar Campo
+                            </button>
+                        </div>
+                        <div id="extraCostsList" class="space-y-2"></div>
+                    </div>
+
+                    <div class="app-card rounded-2xl p-4 space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wide border-b border-slate-200 dark:border-slate-800 pb-2 text-themed-primary flex items-center gap-2">
+                            <i data-lucide="trending-up" class="w-4 h-4 text-emerald-500"></i> Proyección Venta & Retorno Est.
+                        </h3>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Peso Est. Venta (kg)</label>
+                                <input type="number" id="inputTargetWeight" oninput="updateCurrentCattleCalculations()" class="app-input w-full rounded-xl p-2 text-xs">
+                            </div>
+                            <div>
+                                <label class="text-[11px] font-medium text-themed-secondary block mb-1">Precio x kg Venta ($)</label>
+                                <input type="number" id="inputPricePerKg" oninput="updateCurrentCattleCalculations()" class="app-input w-full rounded-xl p-2 text-xs">
+                            </div>
+                        </div>
+
+                        <div class="app-box-nested rounded-xl p-3 space-y-2 text-xs">
+                            <div class="flex justify-between text-themed-secondary">
+                                <span>Ganancia Media Diaria Est. (GMD):</span>
+                                <span id="summaryGMD" class="font-semibold text-themed-primary">0.00 kg/día</span>
+                            </div>
+                            <div class="flex justify-between text-themed-secondary">
+                                <span>Costo Total Acumulado:</span>
+                                <span id="summaryTotalCost" class="font-semibold text-themed-primary">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-themed-secondary">
+                                <span>Ingreso Est. por Venta:</span>
+                                <span id="summaryEstimatedSale" class="font-semibold text-themed-primary">$0.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm font-bold border-t border-slate-200 dark:border-slate-800 pt-2">
+                                <span class="text-themed-primary">Ganancia Neta Estimada:</span>
+                                <span id="summaryNetProfit" class="text-emerald-600 dark:text-emerald-400">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <script>
-        // --- OPCIONES DE PERSONALIZACIÓN PARA EL AVATAR ---
         const BASE_PALETTE = [
-            { name: 'Negro', hex: '#334155' },
-            { name: 'Café', hex: '#b45309' },
-            { name: 'Blanco', hex: '#f1f5f9' },
-            { name: 'Canela', hex: '#d97706' },
-            { name: 'Gris', hex: '#64748b' }
+            { name: 'Negro / Angus', hex: '#334155' },
+            { name: 'Café / Hereford', hex: '#b45309' },
+            { name: 'Blanco / Brahman', hex: '#e2e8f0' },
+            { name: 'Canela / Jersey', hex: '#d97706' },
+            { name: 'Gris / Nelore', hex: '#64748b' }
         ];
 
         const SPOT_PALETTE = [
             { name: 'Blanco', hex: '#ffffff' },
             { name: 'Negro', hex: '#0f172a' },
-            { name: 'Café', hex: '#78350f' },
+            { name: 'Café Oscuro', hex: '#78350f' },
             { name: 'Crema', hex: '#fef3c7' }
         ];
 
-        // --- ESTADO GLOBAL ---
         let appState = {
-            cattles: JSON.parse(localStorage.getItem('gana_track_data')) || []
+            cattles: JSON.parse(localStorage.getItem('gana_track_data')) || [],
+            darkMode: false
         };
         let activeCattleId = null;
+        let activeFilterStatus = 'all';
 
-        // --- INICIALIZACIÓN ---
+        // ENGINE DE PARTÍCULAS INTERACTIVAS (INCREMENTADO PARA LUCIR MÁS)
+        let canvas, ctx;
+        let particles = [];
+        let mouse = { x: -1000, y: -1000, radius: 180 };
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.baseX = x;
+                this.baseY = y;
+                this.size = Math.random() * 3 + 1.2;
+                this.density = (Math.random() * 35) + 1;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+            }
+
+            draw(isDark) {
+                ctx.fillStyle = isDark ? 'rgba(56, 189, 248, 0.65)' : 'rgba(15, 23, 42, 0.4)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                let dx = mouse.x - this.x;
+                let dy = mouse.y - this.y;
+                let distance = Math.hypot(dx, dy);
+
+                if (distance < mouse.radius) {
+                    let forceDirectionX = dx / distance;
+                    let forceDirectionY = dy / distance;
+                    let maxDistance = mouse.radius;
+                    let force = (maxDistance - distance) / maxDistance;
+                    let directionX = forceDirectionX * force * this.density;
+                    let directionY = forceDirectionY * force * this.density;
+
+                    this.x -= directionX * 0.45;
+                    this.y -= directionY * 0.45;
+                }
+            }
+        }
+
+        function initInteractiveEngine() {
+            canvas = document.getElementById('interactiveBgCanvas');
+            ctx = canvas.getContext('2d');
+            resizeCanvas();
+
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                createParticleField();
+            });
+
+            const handlePointer = (x, y) => {
+                mouse.x = x;
+                mouse.y = y;
+            };
+
+            window.addEventListener('mousemove', (e) => handlePointer(e.clientX, e.clientY));
+            window.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) handlePointer(e.touches[0].clientX, e.touches[0].clientY);
+            });
+
+            window.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            });
+
+            createParticleField();
+            requestAnimationFrame(renderCanvasLoop);
+        }
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function createParticleField() {
+            particles = [];
+            // Incrementada la densidad para que no se pierda el efecto
+            const count = Math.min(160, Math.floor((canvas.width * canvas.height) / 8000));
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height));
+            }
+        }
+
+        function renderCanvasLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const isDark = appState.darkMode;
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw(isDark);
+
+                for (let j = i + 1; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let dist = Math.hypot(dx, dy);
+
+                    if (dist < 140) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = isDark 
+                            ? `rgba(56, 189, 248, ${0.2 * (1 - dist / 140)})` 
+                            : `rgba(15, 23, 42, ${0.12 * (1 - dist / 140)})`;
+                        ctx.lineWidth = 0.9;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                }
+            }
+
+            requestAnimationFrame(renderCanvasLoop);
+        }
+
         window.onload = () => {
+            initInteractiveEngine();
             if (appState.cattles.length === 0) {
                 appState.cattles.push({
                     id: Date.now().toString(),
                     tag: "A-101",
                     breed: "Brahman",
+                    gender: "macho",
                     color: "#b45309",
                     spotColor: "#ffffff",
                     spotPattern: "patch",
+                    purchaseDate: new Date().toISOString().split('T')[0],
                     purchasePrice: 12000,
+                    paidAmount: 8000,
                     weightInitial: 180,
                     feedCost: 3500,
                     vetCost: 800,
@@ -309,45 +608,50 @@
             updateGlobalMetrics();
         }
 
-        // --- SVG MINIMALISTA CON PERSONALIZACIÓN DE MANCHAS Y COLORES ---
+        function toggleDarkMode() {
+            appState.darkMode = !appState.darkMode;
+            document.body.classList.toggle('dark-mode', appState.darkMode);
+            const icon = document.getElementById('themeIcon');
+            if (icon) icon.setAttribute('data-lucide', appState.darkMode ? 'sun' : 'moon');
+            lucide.createIcons();
+        }
+
         function getCattleSVG(c) {
             const baseColor = c.color || '#b45309';
             const spotColor = c.spotColor || '#ffffff';
             const pattern = c.spotPattern || 'none';
+            const isMacho = (c.gender || 'macho') === 'macho';
 
             let spotsHTML = '';
             if (pattern === 'eye') {
-                spotsHTML = `
-                    <!-- Mancha en ojo derecho y parte de nariz -->
-                    <path d="M 52 24 C 68 22, 74 38, 65 48 C 58 52, 50 40, 52 24 Z" fill="${spotColor}" opacity="0.9"/>
-                `;
+                spotsHTML = `<path d="M 52 24 C 68 22, 74 38, 65 48 C 58 52, 50 40, 52 24 Z" fill="${spotColor}" opacity="0.9"/>`;
             } else if (pattern === 'patch') {
                 spotsHTML = `
-                    <!-- Manchas Múltiples -->
-                    <circle cx="34" cy="32" r="8" fill="${spotColor}" opacity="0.9"/>
-                    <path d="M 55 22 C 68 20, 72 35, 62 42 C 55 45, 50 35, 55 22 Z" fill="${spotColor}" opacity="0.9"/>
-                    <circle cx="48" cy="18" r="5" fill="${spotColor}" opacity="0.9"/>
+                    <g>
+                        <circle cx="40" cy="30" r="6.5" fill="${spotColor}" opacity="0.9"/>
+                        <ellipse cx="58" cy="36" rx="6.5" ry="8.5" fill="${spotColor}" opacity="0.9"/>
+                        <circle cx="48" cy="22" r="3.5" fill="${spotColor}" opacity="0.9"/>
+                    </g>`;
+            }
+
+            let hornsHTML = '';
+            if (isMacho) {
+                hornsHTML = `
+                    <path d="M 30 28 C 25 15, 20 18, 26 26 Z" fill="#cbd5e1" stroke="#334155" stroke-width="1"/>
+                    <path d="M 70 28 C 75 15, 80 18, 74 26 Z" fill="#cbd5e1" stroke="#334155" stroke-width="1"/>
                 `;
             }
 
             return `
-            <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-md">
-                <!-- Orejas -->
+            <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-sm">
                 <path d="M 20 35 C 10 25, 10 40, 25 40 Z" fill="${baseColor}" stroke="#0f172a" stroke-width="2"/>
                 <path d="M 80 35 C 90 25, 90 40, 75 40 Z" fill="${baseColor}" stroke="#0f172a" stroke-width="2"/>
-                <!-- Cuernos -->
-                <path d="M 30 28 C 25 15, 20 18, 26 26 Z" fill="#cbd5e1" stroke="#475569" stroke-width="1"/>
-                <path d="M 70 28 C 75 15, 80 18, 74 26 Z" fill="#cbd5e1" stroke="#475569" stroke-width="1"/>
-                <!-- Cabeza -->
+                ${hornsHTML}
                 <ellipse cx="50" cy="42" rx="26" ry="24" fill="${baseColor}" stroke="#0f172a" stroke-width="2"/>
-                <!-- Capa de Manchas -->
                 ${spotsHTML}
-                <!-- Hocico -->
                 <ellipse cx="50" cy="58" rx="18" ry="14" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
-                <!-- Narinas -->
                 <circle cx="43" cy="58" r="2.5" fill="#334155"/>
                 <circle cx="57" cy="58" r="2.5" fill="#334155"/>
-                <!-- Ojos -->
                 <circle cx="38" cy="38" r="3" fill="#0f172a"/>
                 <circle cx="62" cy="38" r="3" fill="#0f172a"/>
                 <circle cx="39" cy="37" r="1" fill="#ffffff"/>
@@ -355,22 +659,27 @@
             </svg>`;
         }
 
-        // --- DASHBOARD DE TARJETAS CON BOTÓN DE ELIMINACIÓN DIRECTA ---
         function renderCattleGrid() {
             const grid = document.getElementById('cattleGrid');
             grid.innerHTML = '';
 
             const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = appState.cattles.filter(c => 
-                (c.tag && c.tag.toLowerCase().includes(query)) || 
-                (c.breed && c.breed.toLowerCase().includes(query))
-            );
+            const filtered = appState.cattles.filter(c => {
+                const matchesQuery = (c.tag && c.tag.toLowerCase().includes(query)) || 
+                                     (c.breed && c.breed.toLowerCase().includes(query)) ||
+                                     (c.gender && c.gender.toLowerCase().includes(query));
+                
+                const metrics = calculateCattleFinancials(c);
+                if (activeFilterStatus === 'debt') return matchesQuery && metrics.pendingDebt > 0;
+                if (activeFilterStatus === 'paid') return matchesQuery && metrics.pendingDebt <= 0;
+                return matchesQuery;
+            });
 
             if (filtered.length === 0) {
                 grid.innerHTML = `
-                    <div class="text-center py-8 text-slate-500 glass-card rounded-2xl">
-                        <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
-                        <p class="text-xs">No hay reses registradas o que coincidan.</p>
+                    <div class="col-span-full text-center py-10 app-card rounded-2xl text-themed-secondary">
+                        <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+                        <p class="text-xs font-semibold">No se encontraron cabezas de ganado con los filtros seleccionados.</p>
                     </div>`;
                 updateGlobalMetrics();
                 lucide.createIcons();
@@ -379,36 +688,40 @@
 
             filtered.forEach(cattle => {
                 const metrics = calculateCattleFinancials(cattle);
+                const isPaid = metrics.pendingDebt <= 0;
                 
                 const card = document.createElement('div');
-                card.className = 'glass-card rounded-2xl p-3 flex items-center justify-between hover:border-slate-700 transition relative';
+                card.className = 'app-card rounded-2xl p-3.5 flex items-center justify-between transition relative group';
 
                 card.innerHTML = `
                     <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="openCattleDetail('${cattle.id}')">
-                        <div class="w-12 h-12 rounded-xl bg-slate-950/50 border border-slate-800 p-1 flex-shrink-0">
+                        <div class="w-12 h-12 rounded-xl app-box-nested p-1 flex-shrink-0">
                             ${getCattleSVG(cattle)}
                         </div>
                         <div>
-                            <div class="flex items-center gap-2">
-                                <h3 class="font-bold text-xs text-slate-100">${cattle.tag || 'Sin Arete'}</h3>
-                                <span class="text-[9px] px-1.5 py-0.5 bg-slate-800 text-slate-400 rounded border border-slate-700">${cattle.breed || 'Criollo'}</span>
+                            <div class="flex items-center gap-1.5">
+                                <h3 class="font-bold text-xs text-themed-primary">${cattle.tag || 'Sin ID'}</h3>
+                                <span class="text-[9px] uppercase px-1.5 py-0.5 app-box-nested rounded-md font-semibold">${cattle.gender || 'Macho'}</span>
+                                <span class="text-[9px] px-1.5 py-0.5 app-box-nested rounded-md">${cattle.breed || 'Criollo'}</span>
                             </div>
-                            <div class="text-[10px] text-slate-400 mt-0.5">
-                                Inv: <span class="text-slate-200 font-medium">$${metrics.totalCost.toFixed(2)}</span>
+                            <div class="text-[10px] text-themed-secondary mt-1 flex items-center gap-2">
+                                <span>Inv: <strong class="text-themed-primary">$${metrics.totalCost.toFixed(2)}</strong></span>
+                                <span>•</span>
+                                <span class="${isPaid ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'} font-semibold">
+                                    ${isPaid ? 'Liquidado' : 'Deuda: $' + metrics.pendingDebt.toFixed(2)}
+                                </span>
                             </div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-2">
                         <div class="text-right cursor-pointer" onclick="openCattleDetail('${cattle.id}')">
-                            <span class="text-[9px] text-slate-400 block uppercase">Est. Ganancia</span>
-                            <span class="text-xs font-bold ${metrics.netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
+                            <span class="text-[9px] text-themed-secondary block uppercase font-semibold">Est. Ganancia</span>
+                            <span class="text-xs font-bold ${metrics.netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
                                 $${metrics.netProfit.toFixed(2)}
                             </span>
                         </div>
-                        <!-- Botón de eliminación directa de la tarjeta -->
                         <button onclick="confirmDeleteFromGrid(event, '${cattle.id}', '${cattle.tag || ''}')" 
-                                title="Eliminar res" 
-                                class="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition">
+                                class="p-1.5 text-themed-secondary hover:text-rose-500 rounded-lg transition">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     </div>
@@ -420,21 +733,33 @@
             lucide.createIcons();
         }
 
+        function setFilterStatus(status) {
+            activeFilterStatus = status;
+            document.querySelectorAll('#btnFilterAll, #btnFilterDebt, #btnFilterPaid').forEach(b => {
+                b.className = 'px-3 py-1 rounded-lg font-semibold text-[11px] text-themed-secondary hover:text-themed-primary';
+            });
+            if (status === 'all') document.getElementById('btnFilterAll').className = 'px-3 py-1 rounded-lg font-semibold text-[11px] bg-emerald-500 text-white shadow-sm';
+            if (status === 'debt') document.getElementById('btnFilterDebt').className = 'px-3 py-1 rounded-lg font-semibold text-[11px] bg-emerald-500 text-white shadow-sm';
+            if (status === 'paid') document.getElementById('btnFilterPaid').className = 'px-3 py-1 rounded-lg font-semibold text-[11px] bg-emerald-500 text-white shadow-sm';
+            renderCattleGrid();
+        }
+
         function confirmDeleteFromGrid(event, id, tag) {
-            event.stopPropagation(); // Evita abrir la pantalla de detalle
-            if (confirm(`¿Eliminar definitivamente la res con arete "${tag || 'Sin ID'}"?`)) {
+            event.stopPropagation();
+            if (confirm(`¿Confirma eliminar el registro de la res "${tag || 'Sin ID'}"?`)) {
                 appState.cattles = appState.cattles.filter(c => c.id !== id);
                 saveData();
                 renderCattleGrid();
             }
         }
 
-        // --- CÁLCULOS FINANCIEROS INDIVIDUALES ---
         function calculateCattleFinancials(c) {
             const purchase = parseFloat(c.purchasePrice) || 0;
+            const paid = parseFloat(c.paidAmount) || 0;
+            const pendingDebt = Math.max(0, purchase - paid);
+
             const feed = parseFloat(c.feedCost) || 0;
             const vet = parseFloat(c.vetCost) || 0;
-            
             const extrasTotal = (c.extraCosts || []).reduce((acc, curr) => acc + (parseFloat(curr.cost) || 0), 0);
             
             const totalCost = purchase + feed + vet + extrasTotal;
@@ -442,60 +767,72 @@
             const targetW = parseFloat(c.targetWeight) || 0;
             const priceKg = parseFloat(c.pricePerKg) || 0;
             const estimatedSale = targetW * priceKg;
-            
             const netProfit = estimatedSale - totalCost;
 
-            return { totalCost, estimatedSale, netProfit };
+            const paymentPct = purchase > 0 ? Math.min(100, (paid / purchase) * 100) : 0;
+
+            let daysInFarm = 0;
+            if (c.purchaseDate) {
+                const diffTime = Math.abs(new Date() - new Date(c.purchaseDate + 'T00:00:00'));
+                daysInFarm = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            }
+
+            const initialW = parseFloat(c.weightInitial) || 0;
+            const gainedWeight = Math.max(0, targetW - initialW);
+            const gmd = daysInFarm > 0 ? (gainedWeight / daysInFarm) : 0;
+
+            return { totalCost, estimatedSale, netProfit, pendingDebt, paid, paymentPct, daysInFarm, gmd };
         }
 
-        // --- CÁLCULOS GLOBALES ---
         function updateGlobalMetrics() {
             let totalInv = 0;
             let totalProfit = 0;
+            let totalPaid = 0;
+            let totalDebt = 0;
 
             appState.cattles.forEach(c => {
                 const m = calculateCattleFinancials(c);
                 totalInv += m.totalCost;
                 totalProfit += m.netProfit;
+                totalPaid += m.paid;
+                totalDebt += m.pendingDebt;
             });
 
-            document.getElementById('totalCattleBadge').innerText = `${appState.cattles.length} Cabeza(s)`;
+            document.getElementById('totalCattleBadge').innerText = `${appState.cattles.length} Cabezas`;
             document.getElementById('globalInvestment').innerText = `$${totalInv.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('globalPaid').innerText = `$${totalPaid.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
+            document.getElementById('globalDebt').innerText = `$${totalDebt.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
             
             const profitEl = document.getElementById('globalProfit');
             profitEl.innerText = `$${totalProfit.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
-            profitEl.className = `text-base font-bold ${totalProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+            profitEl.className = `font-bold text-base ${totalProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`;
         }
 
-        // --- VISTA DETALLE ---
         function openCattleDetail(id) {
             activeCattleId = id;
             const cattle = appState.cattles.find(c => c.id === id);
             if (!cattle) return;
 
-            // Render SVG y Datos
-            document.getElementById('detailTagId').innerText = cattle.tag ? `Arete ${cattle.tag}` : 'Sin Arete';
-            document.getElementById('detailBreed').innerText = cattle.breed || 'Sin Raza Registrada';
+            document.getElementById('detailTagId').innerText = cattle.tag ? `Arete ${cattle.tag}` : 'Sin ID';
+            document.getElementById('detailBreed').innerText = cattle.breed || 'Raza Desconocida';
             document.getElementById('avatarContainer').innerHTML = getCattleSVG(cattle);
 
-            // Render Selector Color Base
             const baseContainer = document.getElementById('baseColorPicker');
             baseContainer.innerHTML = '';
             BASE_PALETTE.forEach(p => {
                 const dot = document.createElement('div');
-                dot.className = `color-dot ${cattle.color === p.hex ? 'active' : ''}`;
+                dot.className = `swatch-pill ${cattle.color === p.hex ? 'active' : ''}`;
                 dot.style.backgroundColor = p.hex;
                 dot.title = p.name;
                 dot.onclick = () => updateCustomization('color', p.hex);
                 baseContainer.appendChild(dot);
             });
 
-            // Render Selector Color Mancha
             const spotContainer = document.getElementById('spotColorPicker');
             spotContainer.innerHTML = '';
             SPOT_PALETTE.forEach(p => {
                 const dot = document.createElement('div');
-                dot.className = `color-dot ${cattle.spotColor === p.hex ? 'active' : ''}`;
+                dot.className = `swatch-pill ${cattle.spotColor === p.hex ? 'active' : ''}`;
                 dot.style.backgroundColor = p.hex;
                 dot.title = p.name;
                 dot.onclick = () => updateCustomization('spotColor', p.hex);
@@ -503,11 +840,13 @@
             });
 
             document.getElementById('spotPatternSelect').value = cattle.spotPattern || 'none';
+            document.getElementById('inputGender').value = cattle.gender || 'macho';
 
-            // Inputs Formulario
             document.getElementById('inputTag').value = cattle.tag || '';
             document.getElementById('inputBreed').value = cattle.breed || '';
+            document.getElementById('inputPurchaseDate').value = cattle.purchaseDate || new Date().toISOString().split('T')[0];
             document.getElementById('inputPurchasePrice').value = cattle.purchasePrice || '';
+            document.getElementById('inputPaidAmount').value = cattle.paidAmount || '';
             document.getElementById('inputWeightInitial').value = cattle.weightInitial || '';
             document.getElementById('inputFeedCost').value = cattle.feedCost || '';
             document.getElementById('inputVetCost').value = cattle.vetCost || '';
@@ -517,7 +856,6 @@
             renderExtraCostsList(cattle);
             updateCurrentCattleCalculations();
 
-            // Cambiar Pantallas de forma limpia
             document.getElementById('viewDashboard').classList.add('page-hidden');
             document.getElementById('viewDetail').classList.remove('page-hidden');
             window.scrollTo({ top: 0, behavior: 'instant' });
@@ -538,13 +876,12 @@
             renderCattleGrid();
         }
 
-        // --- ACTUALIZACIONES DINÁMICAS ---
         function updateCurrentCattleField(field, value) {
             const cattle = appState.cattles.find(c => c.id === activeCattleId);
             if (cattle) {
                 cattle[field] = value;
-                if (field === 'tag') document.getElementById('detailTagId').innerText = value ? `Arete ${value}` : 'Sin Arete';
-                if (field === 'breed') document.getElementById('detailBreed').innerText = value || 'Sin Raza Registrada';
+                if (field === 'tag') document.getElementById('detailTagId').innerText = value ? `Arete ${value}` : 'Sin ID';
+                if (field === 'breed') document.getElementById('detailBreed').innerText = value || 'Raza Desconocida';
                 saveData();
             }
         }
@@ -553,7 +890,9 @@
             const cattle = appState.cattles.find(c => c.id === activeCattleId);
             if (!cattle) return;
 
+            cattle.purchaseDate = document.getElementById('inputPurchaseDate').value;
             cattle.purchasePrice = parseFloat(document.getElementById('inputPurchasePrice').value) || 0;
+            cattle.paidAmount = parseFloat(document.getElementById('inputPaidAmount').value) || 0;
             cattle.weightInitial = parseFloat(document.getElementById('inputWeightInitial').value) || 0;
             cattle.feedCost = parseFloat(document.getElementById('inputFeedCost').value) || 0;
             cattle.vetCost = parseFloat(document.getElementById('inputVetCost').value) || 0;
@@ -562,23 +901,28 @@
 
             const m = calculateCattleFinancials(cattle);
 
+            document.getElementById('displayDaysInFarm').innerText = `${m.daysInFarm} Días en Engorda`;
+            document.getElementById('paymentStatusText').innerText = `${m.paymentPct.toFixed(1)}% Pagado`;
+            document.getElementById('paymentProgressBar').style.width = `${m.paymentPct}%`;
+            document.getElementById('displayPendingDebt').innerText = `$${m.pendingDebt.toFixed(2)}`;
+
+            document.getElementById('summaryGMD').innerText = `${m.gmd.toFixed(2)} kg/día`;
             document.getElementById('summaryTotalCost').innerText = `$${m.totalCost.toFixed(2)}`;
             document.getElementById('summaryEstimatedSale').innerText = `$${m.estimatedSale.toFixed(2)}`;
             
             const netProfitEl = document.getElementById('summaryNetProfit');
             netProfitEl.innerText = `$${m.netProfit.toFixed(2)}`;
-            netProfitEl.className = `font-bold ${m.netProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`;
+            netProfitEl.className = `font-bold ${m.netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`;
 
             saveData();
         }
 
-        // --- CAMPOS DINÁMICOS DE COSTOS EXTRA ---
         function renderExtraCostsList(cattle) {
             const container = document.getElementById('extraCostsList');
             container.innerHTML = '';
 
             if (!cattle.extraCosts || cattle.extraCosts.length === 0) {
-                container.innerHTML = `<p class="text-[10px] text-slate-500 italic text-center py-1">Sin gastos adicionales agregados.</p>`;
+                container.innerHTML = `<p class="text-[11px] text-themed-secondary italic text-center py-1">Sin gastos adicionales registrados.</p>`;
                 return;
             }
 
@@ -588,11 +932,11 @@
                 row.innerHTML = `
                     <input type="text" value="${extra.concept}" placeholder="Concepto" 
                            onchange="updateExtraCostItem('${extra.id}', 'concept', this.value)"
-                           class="flex-1 bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
+                           class="app-input flex-1 rounded-xl p-2 text-xs">
                     <input type="number" value="${extra.cost}" placeholder="$" 
                            oninput="updateExtraCostItem('${extra.id}', 'cost', this.value)"
-                           class="w-20 bg-slate-950/50 border border-slate-800 rounded-xl p-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500">
-                    <button onclick="removeExtraCostRow('${extra.id}')" class="p-2 text-slate-500 hover:text-rose-400">
+                           class="app-input w-24 rounded-xl p-2 text-xs font-mono-code">
+                    <button onclick="removeExtraCostRow('${extra.id}')" class="p-2 text-themed-secondary hover:text-rose-500 transition">
                         <i data-lucide="x" class="w-4 h-4"></i>
                     </button>
                 `;
@@ -634,17 +978,19 @@
             }
         }
 
-        // --- NUEVA RES Y ELIMINACIÓN ---
         function openModalNewCattle() {
             const nextNumber = appState.cattles.length + 1;
             const newCattle = {
                 id: Date.now().toString(),
                 tag: `B-${100 + nextNumber}`,
                 breed: "Criollo",
+                gender: "macho",
                 color: BASE_PALETTE[Math.floor(Math.random() * BASE_PALETTE.length)].hex,
                 spotColor: "#ffffff",
                 spotPattern: "none",
+                purchaseDate: new Date().toISOString().split('T')[0],
                 purchasePrice: 0,
+                paidAmount: 0,
                 weightInitial: 0,
                 feedCost: 0,
                 vetCost: 0,
@@ -659,19 +1005,36 @@
 
         function deleteCurrentCattle() {
             const cattle = appState.cattles.find(c => c.id === activeCattleId);
-            if (confirm(`¿Estás seguro de eliminar el registro de la res ${cattle?.tag || ''}?`)) {
+            if (confirm(`¿Confirma eliminar la res ${cattle?.tag || ''}?`)) {
                 appState.cattles = appState.cattles.filter(c => c.id !== activeCattleId);
                 saveData();
                 showDashboard();
             }
         }
 
-        // --- EXPORTAR E IMPORTAR COPIAS DE SEGURIDAD (QoL) ---
+        function copySummaryToClipboard() {
+            const cattle = appState.cattles.find(c => c.id === activeCattleId);
+            if (!cattle) return;
+
+            const m = calculateCattleFinancials(cattle);
+            const text = `📋 FICHA RES GANATRACK
+• Arete: ${cattle.tag || 'Sin ID'} (${cattle.breed || 'Criollo'} - ${cattle.gender || 'Macho'})
+• Inversión Acumulada: $${m.totalCost.toFixed(2)}
+• Pagado: $${m.paid.toFixed(2)} | Pendiente: $${m.pendingDebt.toFixed(2)}
+• Días en Engorda: ${m.daysInFarm} días
+• Venta Estimada: $${m.estimatedSale.toFixed(2)}
+• Ganancia Neta Proyectada: $${m.netProfit.toFixed(2)}`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert("¡Ficha financiera copiada al portapapeles!");
+            });
+        }
+
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState.cattles, null, 2));
             const dlAnchor = document.createElement('a');
             dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `GanaTrack_Reses_Backup_${new Date().toISOString().slice(0,10)}.json`);
+            dlAnchor.setAttribute("download", `GanaTrack_Respaldo_${new Date().toISOString().slice(0,10)}.json`);
             document.body.appendChild(dlAnchor);
             dlAnchor.click();
             dlAnchor.remove();
@@ -686,9 +1049,7 @@
                         appState.cattles = loadedState;
                         saveData();
                         renderCattleGrid();
-                        alert("¡Base de datos importada correctamente!");
-                    } else {
-                        alert("Formato de archivo no válido.");
+                        alert("¡Base de datos cargada correctamente!");
                     }
                 } catch (err) {
                     alert("Error al procesar el archivo JSON.");
